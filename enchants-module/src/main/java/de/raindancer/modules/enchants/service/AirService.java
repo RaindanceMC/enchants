@@ -156,7 +156,7 @@ public final class AirService {
         }
     }
 
-    /** The time left on the action bar while flying; drawn again only when the second shown changes. */
+    /** The time left on the action bar while flying, ticking through the last seconds; drawn again only when the second shown changes. */
     void showFlightBar(Player player, AirState state, boolean flying) {
         if (!flying) {
             if (state.shownSeconds >= 0) {
@@ -170,7 +170,11 @@ public final class AirService {
             return;
         }
         state.shownSeconds = seconds;
-        String key = rule.runningLow(seconds) ? "enchants.flight-remaining-low" : "enchants.flight-remaining";
+        boolean low = rule.runningLow(seconds);
+        if (low && seconds > 0) {
+            effects.play(player.getUniqueId(), Cues.COUNTDOWN);
+        }
+        String key = low ? "enchants.flight-remaining-low" : "enchants.flight-remaining";
         actionBars.show(player.getUniqueId(), FLIGHT_BAR, messages.get(key, "time", Times.compact(seconds * 1000L)),
                 ActionBars.UNTIL_CLEARED, ActionBarPriority.LOW);
     }
@@ -231,10 +235,15 @@ public final class AirService {
                     config.landingGraceSeconds() * 20, 0, true, false, true));
         }
         if (emptied) {
-            // Through Core rather than sendActionBar: the flight bar being cleared right after would wipe it.
-            actionBars.show(player.getUniqueId(), FLIGHT_NOTICE, messages.get("enchants.flight-empty"),
-                    NOTICE_FOR, ActionBarPriority.NORMAL);
+            ranOut(player);
         }
+    }
+
+    void ranOut(Player player) {
+        effects.play(player.getUniqueId(), Cues.COUNTDOWN_DONE);
+        // Through Core rather than sendActionBar: the flight bar being cleared right after would wipe it.
+        actionBars.show(player.getUniqueId(), FLIGHT_NOTICE, messages.get("enchants.flight-empty"),
+                NOTICE_FOR, ActionBarPriority.NORMAL);
     }
 
     public void join(Player player) {

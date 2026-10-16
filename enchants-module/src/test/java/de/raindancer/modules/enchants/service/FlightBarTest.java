@@ -2,6 +2,8 @@ package de.raindancer.modules.enchants.service;
 
 import de.raindancer.core.ui.actionbar.ActionBarPriority;
 import de.raindancer.core.ui.actionbar.ActionBars;
+import de.raindancer.core.ui.effect.Cues;
+import de.raindancer.core.ui.effect.Effects;
 import de.raindancer.core.ui.messages.Messages;
 import de.raindancer.modules.enchants.model.AirState;
 import de.raindancer.modules.enchants.model.FlightBudget;
@@ -30,6 +32,7 @@ class FlightBarTest {
 
     private final ActionBars bars = mock(ActionBars.class);
     private final Messages messages = mock(Messages.class);
+    private final Effects effects = mock(Effects.class);
     private final Player player = mock(Player.class);
     private final UUID id = UUID.randomUUID();
     private AirService air;
@@ -38,7 +41,7 @@ class FlightBarTest {
     void setUp() {
         when(player.getUniqueId()).thenReturn(id);
         when(messages.get(anyString(), any(Object[].class))).thenAnswer(call -> Component.text(call.<String>getArgument(0)));
-        air = new AirService(new AirRule(), new AirStore(), null, null, null, messages, bars);
+        air = new AirService(new AirRule(), new AirStore(), null, null, effects, messages, bars);
     }
 
     private static AirState withLeft(long millis) {
@@ -99,5 +102,35 @@ class FlightBarTest {
         verify(bars, times(2)).show(eq(id), eq(AirService.FLIGHT_BAR), any(Component.class), any(Duration.class),
                 any(ActionBarPriority.class));
         verify(bars, never()).forget(id);
+    }
+
+    @Test
+    @DisplayName("the last five seconds tick once each, and the seconds before them are silent")
+    void ticksWhileRunningLow() {
+        AirState state = withLeft(7_000);
+        for (int i = 0; i < 70; i++) {
+            air.showFlightBar(player, state, true);
+            state.budget.drain(100);
+        }
+        air.showFlightBar(player, state, true);
+        verify(effects, times(5)).play(id, Cues.COUNTDOWN);
+    }
+
+    @Test
+    @DisplayName("redrawing the same second does not tick again")
+    void oneTickPerSecond() {
+        AirState state = withLeft(3_000);
+        air.showFlightBar(player, state, true);
+        air.showFlightBar(player, state, true);
+        verify(effects, times(1)).play(id, Cues.COUNTDOWN);
+    }
+
+    @Test
+    @DisplayName("running out sounds the end of the countdown and puts up the notice")
+    void emptyingSoundsDone() {
+        air.ranOut(player);
+        verify(effects).play(id, Cues.COUNTDOWN_DONE);
+        verify(bars).show(eq(id), eq("enchants-flight-notice"), any(Component.class), any(Duration.class),
+                eq(ActionBarPriority.NORMAL));
     }
 }
