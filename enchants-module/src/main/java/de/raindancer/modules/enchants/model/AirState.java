@@ -15,4 +15,6 @@ public final class AirState {
     public long airborneUntilNanos;
     /** Lifetime flight, millis; whole minutes of it are the Frequent Flyer steps. */
     public long flownMillis;
+    /** The seconds on the flight bar right now, or -1 when it is not shown. Not saved. */
+    public long shownSeconds = -1;
 }

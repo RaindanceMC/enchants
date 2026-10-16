@@ -1,6 +1,8 @@
 # This module's wording. Every line can be rewritten in plugins/RainsCore/messages.yml.
 enchants:
   flight-empty: "<gray>Flight ran out. <white>Land and it recharges."
+  flight-remaining: "<aqua>Flight <white><time></white> <gray>left"
+  flight-remaining-low: "<red>Flight <white><time></white> <red>left — land soon!"
   usage: "<gray>/enchants <dark_gray>— list · <gray>/enchants give <player> <enchantment> [level] <dark_gray>— staff"
   list-header: "<gold>Rain's enchantments:"
   list-line: "<gray>- <white><name></white> <dark_gray>(up to <max>, on <gear>)"

@@ -52,7 +52,7 @@ public final class EnchantsModule implements FlexModule {
     /** Chest Link drops are gathered this many ticks before they are sent. */
     private static final int LINK_EVERY = 20;
 
-    private static final ModuleInfo INFO = ModuleInfo.of("enchants", "Enchants", "0.28.0")
+    private static final ModuleInfo INFO = ModuleInfo.of("enchants", "Enchants", "0.29.0")
             .describedAs("Thirty real enchantments, their shards and the shard world, with advancements")
             .by("Raindancer118");
 
@@ -92,7 +92,7 @@ public final class EnchantsModule implements FlexModule {
         EnchantAdvancements advancements = new EnchantAdvancements(context.core().advancements());
         advancements.define();
         air = new AirService(new AirRule(), new AirStore(), settings::current, advancements,
-                context.core().effects(), context.core().messages());
+                context.core().effects(), context.core().messages(), context.core().actionBars());
         context.closeWith(air.follow(context.core()));
         wornEffects = new WornEffectService(advancements);
         ElytraService elytra = new ElytraService(new ElytraStore(), settings::current, advancements,

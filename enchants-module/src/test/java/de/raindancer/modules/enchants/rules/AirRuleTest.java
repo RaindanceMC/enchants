@@ -49,4 +49,22 @@ class AirRuleTest {
         assertThat(rule.jumpUp(200)).isEqualTo(1.5);
         assertThat(rule.jumpUp(10)).isEqualTo(0.075);
     }
+
+    @Test
+    @DisplayName("the time shown in flight counts whole seconds up, so it reads 0 only once the tank is empty")
+    void secondsShown() {
+        assertThat(rule.secondsShown(0)).isZero();
+        assertThat(rule.secondsShown(1)).isEqualTo(1);
+        assertThat(rule.secondsShown(1_000)).isEqualTo(1);
+        assertThat(rule.secondsShown(1_001)).isEqualTo(2);
+        assertThat(rule.secondsShown(-5)).isZero();
+    }
+
+    @Test
+    @DisplayName("the last few seconds are the running-low ones")
+    void runningLow() {
+        assertThat(rule.runningLow(6)).isFalse();
+        assertThat(rule.runningLow(5)).isTrue();
+        assertThat(rule.runningLow(1)).isTrue();
+    }
 }

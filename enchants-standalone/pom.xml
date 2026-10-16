@@ -51,7 +51,8 @@
         <!-- 0.26.0: Launch III has no cooldown. -->
         <!-- 0.27.0: Autopilot follows the land — low over it, climbing early before mountains, never through it, landing on the roof above a covered place — and its orbit camera circles the flier and is turned with the mouse. -->
         <!-- 0.28.0: no hourly shard limit any more (setting shards-per-hour removed): every shard a creature drops is found. -->
-        <plugin.version>0.28.0</plugin.version>
+        <!-- 0.29.0: Flight shows the time left on the action bar while flying, red in the last five seconds. -->
+        <plugin.version>0.29.0</plugin.version>
     </properties>
 
     <dependencies>

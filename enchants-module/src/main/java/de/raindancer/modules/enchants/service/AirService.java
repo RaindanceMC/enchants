@@ -3,6 +3,9 @@ package de.raindancer.modules.enchants.service;
 import de.raindancer.core.RainsCore;
 import de.raindancer.core.content.enchant.CustomEnchantments;
 import de.raindancer.core.content.enchant.RainsEnchants;
+import de.raindancer.core.platform.util.Times;
+import de.raindancer.core.ui.actionbar.ActionBarPriority;
+import de.raindancer.core.ui.actionbar.ActionBars;
 import de.raindancer.core.ui.effect.Cues;
 import de.raindancer.core.ui.effect.Effects;
 import de.raindancer.core.ui.messages.Messages;
@@ -18,6 +21,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
+import java.time.Duration;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -35,6 +39,10 @@ public final class AirService {
     /** A flier leaves a couple of sparks behind this often, in ticks: a trail, not a cloud. */
     private static final int TRAIL_EVERY = 10;
 
+    static final String FLIGHT_BAR = "enchants-flight";
+    private static final String FLIGHT_NOTICE = "enchants-flight-notice";
+    private static final Duration NOTICE_FOR = Duration.ofSeconds(3);
+
     private static final long HOLD_NANOS = 100_000_000L;
     private static final long AIRBORNE_NANOS = 400_000_000L;
     private static final long LONGEST_STEP_MILLIS = 250;
@@ -45,16 +53,19 @@ public final class AirService {
     private final EnchantAdvancements advancements;
     private final Effects effects;
     private final Messages messages;
+    private final ActionBars actionBars;
     private final Map<UUID, AirState> states = new ConcurrentHashMap<>();
 
     public AirService(AirRule rule, AirStore store, Supplier<EnchantsSettings> settings,
-                      EnchantAdvancements advancements, Effects effects, Messages messages) {
+                      EnchantAdvancements advancements, Effects effects, Messages messages,
+                      ActionBars actionBars) {
         this.rule = rule;
         this.store = store;
         this.settings = settings;
         this.advancements = advancements;
         this.effects = effects;
         this.messages = messages;
+        this.actionBars = actionBars;
     }
 
     /** Lets the charge follow the player between servers, and re-reads it when it arrives after a join. */
@@ -95,6 +106,7 @@ public final class AirService {
         state.lastNanos = now;
         if (player.getGameMode() == GameMode.CREATIVE || player.getGameMode() == GameMode.SPECTATOR) {
             state.granted = false;
+            showFlightBar(player, state, false);
             return;
         }
 
@@ -130,6 +142,9 @@ public final class AirService {
             state.budget.recharge(elapsed, capacity, config.flightRechargeSeconds() * 1000L);
         }
 
+        showFlightBar(player, state, player.isFlying() && state.granted
+                && rule.mayFly(flight, state.budget.remainingMillis()));
+
         boolean want = now >= state.holdUntilNanos
                 && rule.allowFlight(flight, state.budget.remainingMillis(), jump, state.jumpsUsed);
         if (want && !player.getAllowFlight()) {
@@ -139,6 +154,25 @@ public final class AirService {
             state.granted = false;
             player.setAllowFlight(false);
         }
+    }
+
+    /** The time left on the action bar while flying; drawn again only when the second shown changes. */
+    void showFlightBar(Player player, AirState state, boolean flying) {
+        if (!flying) {
+            if (state.shownSeconds >= 0) {
+                state.shownSeconds = -1;
+                actionBars.clear(player.getUniqueId(), FLIGHT_BAR);
+            }
+            return;
+        }
+        long seconds = rule.secondsShown(state.budget.remainingMillis());
+        if (seconds == state.shownSeconds) {
+            return;
+        }
+        state.shownSeconds = seconds;
+        String key = rule.runningLow(seconds) ? "enchants.flight-remaining-low" : "enchants.flight-remaining";
+        actionBars.show(player.getUniqueId(), FLIGHT_BAR, messages.get(key, "time", Times.compact(seconds * 1000L)),
+                ActionBars.UNTIL_CLEARED, ActionBarPriority.LOW);
     }
 
     /** @return true to cancel the toggle: it was a jump, or flight that is not available */
@@ -197,7 +231,9 @@ public final class AirService {
                     config.landingGraceSeconds() * 20, 0, true, false, true));
         }
         if (emptied) {
-            player.sendActionBar(messages.get("enchants.flight-empty"));
+            // Through Core rather than sendActionBar: the flight bar being cleared right after would wipe it.
+            actionBars.show(player.getUniqueId(), FLIGHT_NOTICE, messages.get("enchants.flight-empty"),
+                    NOTICE_FOR, ActionBarPriority.NORMAL);
         }
     }
 
@@ -225,7 +261,8 @@ public final class AirService {
         }
     }
 
-    private static void release(Player player, AirState state) {
+    private void release(Player player, AirState state) {
+        showFlightBar(player, state, false);
         if (state.granted) {
             state.granted = false;
             player.setAllowFlight(false);

@@ -1,3 +1,5 @@
 # The serious wording for this module: only the lines that differ from messages.yml.
 enchants:
   flight-empty: "<gray>Flight charge used up. Land to recharge."
+  flight-remaining: "<gray>Flight remaining: <white><time></white>"
+  flight-remaining-low: "<red>Flight remaining: <white><time></white>"
