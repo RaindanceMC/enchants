@@ -82,6 +82,24 @@ public final class OffenceListener implements IEnchantsListener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onAnvil(PrepareAnvilEvent event) {
         armour.anvil(event);
+        org.bukkit.inventory.ItemStack result = event.getResult();
+        if (result != null && !result.isEmpty() && de.raindancer.modules.enchants.rules.AnvilGate.blocks(
+                levels(event.getInventory().getFirstItem()), levels(result),
+                de.raindancer.core.content.enchant.CustomEnchantments::isSwitchedOff)) {
+            event.setResult(null);
+        }
+    }
+
+    private static java.util.Map<String, Integer> levels(org.bukkit.inventory.ItemStack item) {
+        java.util.Map<String, Integer> levels = new java.util.HashMap<>();
+        if (item == null || item.isEmpty()) {
+            return levels;
+        }
+        java.util.Map<org.bukkit.enchantments.Enchantment, Integer> on =
+                item.getItemMeta() instanceof org.bukkit.inventory.meta.EnchantmentStorageMeta book
+                        ? book.getStoredEnchants() : item.getEnchantments();
+        on.forEach((enchantment, level) -> levels.put(enchantment.getKey().asString(), level));
+        return levels;
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

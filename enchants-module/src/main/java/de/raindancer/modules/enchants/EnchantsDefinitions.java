@@ -12,6 +12,14 @@ public final class EnchantsDefinitions {
     private EnchantsDefinitions() {
     }
 
+    /** Every key, for the switches on the settings page. */
+    public static final class Keys implements java.util.function.Supplier<List<String>> {
+        @Override
+        public List<String> get() {
+            return all().stream().map(EnchantDef::key).toList();
+        }
+    }
+
     public static List<EnchantDef> all() {
         return List.of(
                 EnchantDef.builder(RainsEnchants.VEINMINER).name("<gold>Veinminer").maxLevel(1)
@@ -73,6 +81,10 @@ public final class EnchantsDefinitions {
                 EnchantDef.builder(RainsEnchants.FUSION).name("<aqua>Fusion").maxLevel(1)
                         .gear(Gear.CHESTPLATE).anvilCost(8).build(),
                 EnchantDef.builder(RainsEnchants.AUTOPILOT).name("<aqua>Autopilot").maxLevel(3)
-                        .gear(Gear.ELYTRA).anvilCost(8).build());
+                        .gear(Gear.ELYTRA).anvilCost(8).build(),
+                EnchantDef.builder(RainsEnchants.REINFORCED).name("<gold>Reinforced").maxLevel(3)
+                        .gear(Gear.ANY_GEAR).anvilCost(8).build(),
+                EnchantDef.builder(RainsEnchants.XP_SIPHON).name("<green>XP Siphon").maxLevel(1)
+                        .gear(Gear.HAND_TOOLS).anvilCost(4).build());
     }
 }

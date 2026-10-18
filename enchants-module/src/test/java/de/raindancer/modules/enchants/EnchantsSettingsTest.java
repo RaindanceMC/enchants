@@ -30,6 +30,7 @@ class EnchantsSettingsTest {
         assertThat(defaults.shardDropPercent()).isEqualTo(100);
         assertThat(defaults.crystalWardenPerMille()).isEqualTo(2);
         assertThat(defaults.autopilotCooldownSeconds()).isEqualTo(60);
+        assertThat(defaults.reinforcedPercentPerLevel()).isEqualTo(25);
     }
 
     @Test
@@ -47,5 +48,19 @@ class EnchantsSettingsTest {
         de.raindancer.core.data.settings.Range range = component.getAnnotation(de.raindancer.core.data.settings.Range.class);
 
         assertThat(range.max()).isGreaterThanOrEqualTo(1000);
+    }
+
+    @Test
+    @DisplayName("Launch starts switched off; /settings shows a button for every enchantment, listed meaning off")
+    void switchedOff() throws Exception {
+        assertThat(EnchantsSettings.DEFAULTS.switchedOff()).containsExactly(de.raindancer.core.content.enchant.RainsEnchants.LAUNCH);
+
+        var component = java.util.Arrays.stream(EnchantsSettings.class.getRecordComponents())
+                .filter(each -> each.getName().equals("switchedOff")).findFirst().orElseThrow();
+        de.raindancer.core.data.settings.Choices choices = component.getAnnotation(de.raindancer.core.data.settings.Choices.class);
+        assertThat(choices.listedMeansOff()).isTrue();
+        assertThat(choices.value().getDeclaredConstructor().newInstance().get())
+                .containsExactlyElementsOf(EnchantsDefinitions.all().stream()
+                        .map(de.raindancer.core.content.enchant.EnchantDef::key).toList());
     }
 }

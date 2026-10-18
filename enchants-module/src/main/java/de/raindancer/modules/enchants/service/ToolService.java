@@ -7,10 +7,12 @@ import de.raindancer.core.platform.util.Scheduling;
 import de.raindancer.core.ui.messages.Messages;
 import de.raindancer.modules.enchants.EnchantAdvancements;
 import de.raindancer.modules.enchants.EnchantsSettings;
+import de.raindancer.modules.enchants.rules.Reinforced;
 import de.raindancer.modules.enchants.rules.ToolRules;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.enchantments.Enchantment;
@@ -31,7 +33,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Supplier;
 
 /**
- * Smelting, Telekinesis, Excavator, Harvester, Wisdom and Soulbound: what a tool does to the blocks it breaks,
+ * Smelting, Telekinesis, XP Siphon, Excavator, Harvester, Wisdom, Soulbound and Reinforced: what a tool does to the blocks it breaks,
  * the drops that come out of them and the gear a player dies with. Every extra block is broken through
  * {@link Player#breakBlock}, so claims, logs and the other drop enchantments see it like any other.
  */
@@ -224,6 +226,9 @@ public final class ToolService {
         int whole = (int) owed;
         if (whole > 0) {
             smeltExperience.put(player.getUniqueId(), owed - whole);
+            if (siphon(player, whole) == 0) {
+                return;
+            }
             block.getWorld().spawn(block.getLocation().add(0.5, 0.5, 0.5), ExperienceOrb.class,
                     orb -> orb.setExperience(whole));
         }
@@ -273,7 +278,39 @@ public final class ToolService {
                 advancements.used(killer.getUniqueId(), RainsEnchants.TELEKINESIS);
             }
         }
-        return experience(killer, experience);
+        return siphon(killer, experience(killer, experience));
+    }
+
+    /**
+     * XP Siphon: the experience goes straight to the player, mending their gear first as a picked-up orb would.
+     *
+     * @return what is still to be dropped
+     */
+    public int siphon(Player player, int experience) {
+        if (experience <= 0 || level(hand(player), RainsEnchants.XP_SIPHON) < 1) {
+            return experience;
+        }
+        player.giveExp(experience, true);
+        player.playSound(player, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.2f,
+                ThreadLocalRandom.current().nextFloat(0.8f, 1.2f));
+        advancements.used(player.getUniqueId(), RainsEnchants.XP_SIPHON);
+        return 0;
+    }
+
+    // ---------------------------------------------------------------------------- wear
+
+    /** Reinforced keeps back some of the wear Unbreaking left. @return the wear the item takes */
+    public int wear(Player player, ItemStack item, int damage) {
+        int reinforced = level(item, RainsEnchants.REINFORCED);
+        if (reinforced < 1 || damage <= 0) {
+            return damage;
+        }
+        int left = Reinforced.damageAfter(damage, reinforced, settings.get().reinforcedPercentPerLevel(),
+                ThreadLocalRandom.current());
+        if (left < damage) {
+            advancements.used(player.getUniqueId(), RainsEnchants.REINFORCED);
+        }
+        return left;
     }
 
     // ---------------------------------------------------------------------------- dying

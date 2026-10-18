@@ -1,5 +1,7 @@
 package de.raindancer.modules.enchants;
 
+import de.raindancer.core.content.enchant.CustomEnchantments;
+
 import de.raindancer.core.data.settings.SettingsStore;
 import de.raindancer.core.platform.util.Scheduling;
 import de.raindancer.modules.api.FlexModule;
@@ -52,7 +54,7 @@ public final class EnchantsModule implements FlexModule {
     /** Chest Link drops are gathered this many ticks before they are sent. */
     private static final int LINK_EVERY = 20;
 
-    private static final ModuleInfo INFO = ModuleInfo.of("enchants", "Enchants", "0.30.0")
+    private static final ModuleInfo INFO = ModuleInfo.of("enchants", "Enchants", "0.31.0")
             .describedAs("Thirty real enchantments, their shards and the shard world, with advancements")
             .by("Raindancer118");
 
@@ -89,6 +91,9 @@ public final class EnchantsModule implements FlexModule {
         context.core().messages().seriousFrom(EnchantsModule.class.getResourceAsStream("messages-serious.yml"));
         PermissionNodes.register(context.plugin().getServer());
 
+        // Before the advancements are defined: the full set counts only what is switched on.
+        CustomEnchantments.switchOff(settings.current().switchedOff());
+        settings.onChange(fresh -> CustomEnchantments.switchOff(fresh.switchedOff()));
         EnchantAdvancements advancements = new EnchantAdvancements(context.core().advancements());
         advancements.define();
         air = new AirService(new AirRule(), new AirStore(), settings::current, advancements,
@@ -185,6 +190,7 @@ public final class EnchantsModule implements FlexModule {
 
     @Override
     public void disable() {
+        CustomEnchantments.switchOff(java.util.List.of());
         if (links != null) {
             links.flush();
         }

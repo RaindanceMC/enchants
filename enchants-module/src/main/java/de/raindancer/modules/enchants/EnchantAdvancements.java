@@ -33,12 +33,16 @@ public final class EnchantAdvancements {
 
     private final CustomAdvancements advancements;
     private final Map<UUID, Integer> excavated = new ConcurrentHashMap<>();
+    /** What the full set asks for: every enchantment switched on when the tab was defined. */
+    private List<String> counted = FIRST_USE;
 
     public EnchantAdvancements(CustomAdvancements advancements) {
         this.advancements = advancements;
     }
 
     public void define() {
+        counted = FIRST_USE.stream()
+                .filter(key -> !de.raindancer.core.content.enchant.CustomEnchantments.isSwitchedOff(key)).toList();
         advancements.define(AdvancementDef.builder(PLUGIN, "root").icon(Material.ENCHANTED_BOOK)
                 .title("<gold>Rain's Enchantments").description("Use one of the server's own enchantments")
                 .background("minecraft:gui/advancements/backgrounds/adventure").build());
@@ -120,6 +124,10 @@ public final class EnchantAdvancements {
                 "Fuse two chestplates into one", AdvancementFrame.TASK, 1);
         child("thrice_forged", "fusion", Material.NETHERITE_CHESTPLATE, "Thrice Forged",
                 "Fuse a chestplate as far as it goes", AdvancementFrame.CHALLENGE, 1);
+        child("reinforced", "root", Material.IRON_BLOCK, "Built to Last",
+                "Have Reinforced gear shrug off some wear", AdvancementFrame.TASK, 1);
+        child("xp_siphon", "root", Material.EXPERIENCE_BOTTLE, "Straight to the Head",
+                "Have experience flow straight into you with XP Siphon", AdvancementFrame.TASK, 1);
         child("autopilot", "root", Material.ELYTRA, "Sit Back and Relax",
                 "Let Autopilot fly you somewhere", AdvancementFrame.TASK, 1);
         child("shardlands", "root", Material.CRYING_OBSIDIAN, "Into the Dark",
@@ -127,8 +135,8 @@ public final class EnchantAdvancements {
         child("first_shard", "shardlands", Material.ECHO_SHARD, "Shard Hunter",
                 "Take an enchantment's shard off a monster in the shard world", AdvancementFrame.TASK, 1);
         child("full_set", "root", Material.NETHER_STAR, "Fully Enchanted",
-                "Use every one of Rain's " + FIRST_USE.size() + " enchantments", AdvancementFrame.CHALLENGE,
-                FIRST_USE.size());
+                "Use every one of Rain's " + counted.size() + " enchantments", AdvancementFrame.CHALLENGE,
+                counted.size());
     }
 
     /** An enchantment did its thing for somebody. */
@@ -147,7 +155,7 @@ public final class EnchantAdvancements {
      * module awarded (the economy's Auto Sell), which this class never saw happen.
      */
     public void recount(UUID player) {
-        int have = (int) FIRST_USE.stream().filter(key -> advancements.has(player, key)).count();
+        int have = (int) counted.stream().filter(key -> advancements.has(player, key)).count();
         if (have > 0) {
             advancements.award(player, ROOT);
         }

@@ -25,7 +25,7 @@ class EnchantsDefinitionsTest {
                 RainsEnchants.HEAT_SEEKING, RainsEnchants.THOR, RainsEnchants.VOLLEY, RainsEnchants.LIFESTEAL,
                 RainsEnchants.EXECUTIONER, RainsEnchants.BLEED, RainsEnchants.VENOM, RainsEnchants.CLEAVE,
                 RainsEnchants.ARMOR_PIERCE, RainsEnchants.BERSERK, RainsEnchants.OVERPOWER, RainsEnchants.UNDYING,
-                RainsEnchants.FUSION, RainsEnchants.AUTOPILOT);
+                RainsEnchants.FUSION, RainsEnchants.AUTOPILOT, RainsEnchants.REINFORCED, RainsEnchants.XP_SIPHON);
         assertThat(def(RainsEnchants.CLEAVE).gear()).isEqualTo(Gear.AXES);
         assertThat(def(RainsEnchants.AUTOPILOT).maxLevel()).isEqualTo(3);
         assertThat(def(RainsEnchants.OVERPOWER).maxLevel()).isEqualTo(5);
@@ -64,5 +64,32 @@ class EnchantsDefinitionsTest {
         assertThat(def(RainsEnchants.NIGHT_VISION).maxLevel()).isEqualTo(1);
         assertThat(def(RainsEnchants.FLIGHT).maxLevel()).isGreaterThan(1);
         assertThat(def(RainsEnchants.DOUBLE_JUMP).maxLevel()).isGreaterThan(1);
+    }
+
+    @Test
+    @DisplayName("Reinforced goes on any gear and sits beside Unbreaking; XP Siphon goes on hand tools beside Telekinesis")
+    void durabilityAndExperience() {
+        EnchantDef reinforced = def(RainsEnchants.REINFORCED);
+        assertThat(reinforced.gear()).isEqualTo(Gear.ANY_GEAR);
+        assertThat(reinforced.maxLevel()).isEqualTo(3);
+        assertThat(reinforced.exclusiveWith()).as("stacks with Unbreaking and Mending").isEmpty();
+
+        EnchantDef siphon = def(RainsEnchants.XP_SIPHON);
+        assertThat(siphon.gear()).isEqualTo(Gear.HAND_TOOLS);
+        assertThat(siphon.maxLevel()).isEqualTo(1);
+        assertThat(siphon.exclusiveWith()).as("an enchantment of its own, not a Telekinesis variant").isEmpty();
+        assertThat(def(RainsEnchants.TELEKINESIS).exclusiveWith()).doesNotContain(RainsEnchants.XP_SIPHON);
+    }
+
+    @Test
+    @DisplayName("each goes only on its own gear: a chestplate enchantment never fits a pickaxe, a sword one never fits boots")
+    void onlyItsGear() {
+        assertThat(def(RainsEnchants.LIFESTEAL).gear().matches("diamond_pickaxe")).isFalse();
+        assertThat(def(RainsEnchants.FLIGHT).gear().matches("diamond_sword")).isFalse();
+        assertThat(def(RainsEnchants.DOUBLE_JUMP).gear().matches("diamond_helmet")).isFalse();
+        assertThat(def(RainsEnchants.XP_SIPHON).gear().matches("diamond_chestplate")).isFalse();
+        assertThat(def(RainsEnchants.XP_SIPHON).gear().matches("netherite_sword")).isTrue();
+        assertThat(def(RainsEnchants.REINFORCED).gear().matches("elytra")).isTrue();
+        assertThat(def(RainsEnchants.REINFORCED).gear().matches("diamond")).isFalse();
     }
 }

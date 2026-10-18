@@ -58,9 +58,10 @@ public final class ShardDropService {
         int count = de.raindancer.modules.enchants.rules.ShardBonus.apply(
                 boss ? de.raindancer.modules.enchants.rules.CrystalWither.shards(random) : kindShards, random);
         int rareFactor = boss ? de.raindancer.modules.enchants.rules.CrystalWither.RARE_FACTOR : tier.rareFactor();
+        boolean legendary = mob instanceof org.bukkit.entity.Warden || mob instanceof org.bukkit.entity.Wither;
         for (int i = 0; i < count; i++) {
-            String enchantment = ShardRules.pick(random, rareFactor);
-            if (CustomEnchantments.find(enchantment).isPresent()) {
+            String enchantment = ShardRules.pick(random, rareFactor, legendary, config.switchedOff());
+            if (enchantment != null && CustomEnchantments.find(enchantment).isPresent()) {
                 found.merge(enchantment, 1, Integer::sum);
             }
         }

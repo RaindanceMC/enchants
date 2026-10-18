@@ -59,7 +59,8 @@ class EnchantAdvancementsTest {
         for (String id : new String[]{"root", "veinminer", "motherlode", "night_vision", "flight", "empty_tank",
                 "frequent_flyer", "double_jump", "triple_jump", "full_set", "auto_sell", "boost", "burnout",
                 "launch", "ludicrous_speed", "swiftness", "haste", "soulbound", "wisdom", "excavator", "tunnel_vision",
-                "harvester", "bumper_crop", "smelting", "telekinesis", "chest_link", "shardlands", "first_shard"}) {
+                "harvester", "bumper_crop", "smelting", "telekinesis", "chest_link", "shardlands", "first_shard",
+                "reinforced", "xp_siphon"}) {
             assertThat(advancements.isLoaded("rainsenchants:" + id)).as(id).isTrue();
         }
     }
@@ -178,5 +179,22 @@ class EnchantAdvancementsTest {
 
         enchants.jumped(ALICE, 3);
         assertThat(advancements.has(ALICE, "rainsenchants:triple_jump")).isTrue();
+    }
+
+    @Test
+    @DisplayName("a switched-off enchantment is not needed for the full set, so it stays within reach")
+    void fullSetWithoutSwitchedOff() {
+        de.raindancer.core.content.enchant.CustomEnchantments.switchOff(List.of(RainsEnchants.LAUNCH));
+        try {
+            enchants = new EnchantAdvancements(advancements);
+            enchants.define();
+            EnchantsDefinitions.all().stream().map(EnchantDef::key)
+                    .filter(key -> !key.equals(RainsEnchants.LAUNCH))
+                    .forEach(key -> enchants.used(ALICE, key));
+
+            assertThat(advancements.has(ALICE, "rainsenchants:full_set")).isTrue();
+        } finally {
+            de.raindancer.core.content.enchant.CustomEnchantments.switchOff(List.of());
+        }
     }
 }

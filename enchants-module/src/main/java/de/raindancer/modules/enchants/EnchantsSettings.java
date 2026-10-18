@@ -1,5 +1,6 @@
 package de.raindancer.modules.enchants;
 
+import de.raindancer.core.data.settings.Choices;
 import de.raindancer.core.data.settings.Describe;
 import de.raindancer.core.data.settings.In;
 import de.raindancer.core.data.settings.Key;
@@ -123,8 +124,23 @@ public record EnchantsSettings(
         @In("enchants") @Title("Autopilot cooldown, seconds") @Range(min = 0, max = 3600)
         @Describe("How long after landing an Autopilot I elytra can fly again; Autopilot II waits half as long, Autopilot III not at all.")
         @Key("autopilot-cooldown-seconds")
-        int autopilotCooldownSeconds) {
+        int autopilotCooldownSeconds,
+
+        @In("enchants") @Title("Reinforced, wear saved per level, percent") @Range(min = 1, max = 30)
+        @Describe("How likely each point of wear is skipped per level of Reinforced, on top of Unbreaking: 25 has "
+                + "Reinforced III skip three in four. Never more than nine in ten, so nothing becomes unbreakable.")
+        @Key("reinforced-percent-per-level")
+        int reinforcedPercentPerLevel,
+
+        @In("enchants") @Title("Switched-off enchantments")
+        @Choices(value = EnchantsDefinitions.Keys.class, listedMeansOff = true)
+        @Describe("A switched-off enchantment does nothing, drops no shards, is not sold and cannot be put on at an "
+                + "anvil. Items keep it, so switching it back on brings it back as it was. The Fully Enchanted "
+                + "advancement counts the ones on at the last start.")
+        @Key("switched-off")
+        java.util.List<String> switchedOff) {
 
     public static final EnchantsSettings DEFAULTS = new EnchantsSettings(30, 30, 8, 100, 90, 150, 200, 600, 50,
-            true, "shardlands", 2500, 140, Material.AMETHYST_SHARD, 100, 70, 12, 2, 60);
+            true, "shardlands", 2500, 140, Material.AMETHYST_SHARD, 100, 70, 12, 2, 60, 25,
+            java.util.List.of(de.raindancer.core.content.enchant.RainsEnchants.LAUNCH));
 }

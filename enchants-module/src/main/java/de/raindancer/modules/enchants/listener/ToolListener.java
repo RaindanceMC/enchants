@@ -11,6 +11,7 @@ import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.EquipmentSlot;
 
@@ -20,6 +21,7 @@ import java.util.UUID;
  * The tool enchantments on the server's events. Drops pass through in a fixed order, by priority:
  * Harvester keeps its seed (LOWEST), Smelting turns them (LOW), the economy's Auto Sell sells them
  * (NORMAL), Chest Link sends the rest away (HIGH), Telekinesis picks up what is left (HIGHEST).
+ * Experience: Wisdom adds to it (HIGH), XP Siphon takes it all once the break is certain (MONITOR).
  */
 public final class ToolListener implements IEnchantsListener {
 
@@ -44,6 +46,23 @@ public final class ToolListener implements IEnchantsListener {
     public void onBroken(BlockBreakEvent event) {
         tools.afterBreak(event.getPlayer(), event.getBlock(), event.getBlock().getType(),
                 event.getBlock().getType().getHardness());
+    }
+
+    /** Only here is the break certain, so the experience is given now and nothing is left to drop. */
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void siphon(BlockBreakEvent event) {
+        event.setExpToDrop(tools.siphon(event.getPlayer(), event.getExpToDrop()));
+    }
+
+    /** Paper hands over the wear after Unbreaking, so Reinforced comes on top of it. */
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onWear(PlayerItemDamageEvent event) {
+        int left = tools.wear(event.getPlayer(), event.getItem(), event.getDamage());
+        if (left <= 0) {
+            event.setCancelled(true);
+        } else {
+            event.setDamage(left);
+        }
     }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
