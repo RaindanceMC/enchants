@@ -1,0 +1,237 @@
+{
+  "model": {
+    "type": "minecraft:select",
+    "property": "minecraft:custom_model_data",
+    "index": 0,
+    "cases": [
+      {
+        "when": "rainsenchants:veinminer",
+        "model": {
+          "type": "minecraft:model",
+          "model": "rainsenchants:item/shard/veinminer"
+        }
+      },
+      {
+        "when": "rainsenchants:night_vision",
+        "model": {
+          "type": "minecraft:model",
+          "model": "rainsenchants:item/shard/night_vision"
+        }
+      },
+      {
+        "when": "rainsenchants:flight",
+        "model": {
+          "type": "minecraft:model",
+          "model": "rainsenchants:item/shard/flight"
+        }
+      },
+      {
+        "when": "rainsenchants:double_jump",
+        "model": {
+          "type": "minecraft:model",
+          "model": "rainsenchants:item/shard/double_jump"
+        }
+      },
+      {
+        "when": "rainsenchants:auto_sell",
+        "model": {
+          "type": "minecraft:model",
+          "model": "rainsenchants:item/shard/auto_sell"
+        }
+      },
+      {
+        "when": "rainsenchants:boost",
+        "model": {
+          "type": "minecraft:model",
+          "model": "rainsenchants:item/shard/boost"
+        }
+      },
+      {
+        "when": "rainsenchants:launch",
+        "model": {
+          "type": "minecraft:model",
+          "model": "rainsenchants:item/shard/launch"
+        }
+      },
+      {
+        "when": "rainsenchants:swiftness",
+        "model": {
+          "type": "minecraft:model",
+          "model": "rainsenchants:item/shard/swiftness"
+        }
+      },
+      {
+        "when": "rainsenchants:haste",
+        "model": {
+          "type": "minecraft:model",
+          "model": "rainsenchants:item/shard/haste"
+        }
+      },
+      {
+        "when": "rainsenchants:soulbound",
+        "model": {
+          "type": "minecraft:model",
+          "model": "rainsenchants:item/shard/soulbound"
+        }
+      },
+      {
+        "when": "rainsenchants:wisdom",
+        "model": {
+          "type": "minecraft:model",
+          "model": "rainsenchants:item/shard/wisdom"
+        }
+      },
+      {
+        "when": "rainsenchants:excavator",
+        "model": {
+          "type": "minecraft:model",
+          "model": "rainsenchants:item/shard/excavator"
+        }
+      },
+      {
+        "when": "rainsenchants:harvester",
+        "model": {
+          "type": "minecraft:model",
+          "model": "rainsenchants:item/shard/harvester"
+        }
+      },
+      {
+        "when": "rainsenchants:smelting",
+        "model": {
+          "type": "minecraft:model",
+          "model": "rainsenchants:item/shard/smelting"
+        }
+      },
+      {
+        "when": "rainsenchants:telekinesis",
+        "model": {
+          "type": "minecraft:model",
+          "model": "rainsenchants:item/shard/telekinesis"
+        }
+      },
+      {
+        "when": "rainsenchants:chest_link",
+        "model": {
+          "type": "minecraft:model",
+          "model": "rainsenchants:item/shard/chest_link"
+        }
+      },
+      {
+        "when": "rainsenchants:heat_seeking",
+        "model": {
+          "type": "minecraft:model",
+          "model": "rainsenchants:item/shard/heat_seeking"
+        }
+      },
+      {
+        "when": "rainsenchants:thor",
+        "model": {
+          "type": "minecraft:model",
+          "model": "rainsenchants:item/shard/thor"
+        }
+      },
+      {
+        "when": "rainsenchants:volley",
+        "model": {
+          "type": "minecraft:model",
+          "model": "rainsenchants:item/shard/volley"
+        }
+      },
+      {
+        "when": "rainsenchants:lifesteal",
+        "model": {
+          "type": "minecraft:model",
+          "model": "rainsenchants:item/shard/lifesteal"
+        }
+      },
+      {
+        "when": "rainsenchants:executioner",
+        "model": {
+          "type": "minecraft:model",
+          "model": "rainsenchants:item/shard/executioner"
+        }
+      },
+      {
+        "when": "rainsenchants:bleed",
+        "model": {
+          "type": "minecraft:model",
+          "model": "rainsenchants:item/shard/bleed"
+        }
+      },
+      {
+        "when": "rainsenchants:venom",
+        "model": {
+          "type": "minecraft:model",
+          "model": "rainsenchants:item/shard/venom"
+        }
+      },
+      {
+        "when": "rainsenchants:cleave",
+        "model": {
+          "type": "minecraft:model",
+          "model": "rainsenchants:item/shard/cleave"
+        }
+      },
+      {
+        "when": "rainsenchants:armor_pierce",
+        "model": {
+          "type": "minecraft:model",
+          "model": "rainsenchants:item/shard/armor_pierce"
+        }
+      },
+      {
+        "when": "rainsenchants:berserk",
+        "model": {
+          "type": "minecraft:model",
+          "model": "rainsenchants:item/shard/berserk"
+        }
+      },
+      {
+        "when": "rainsenchants:overpower",
+        "model": {
+          "type": "minecraft:model",
+          "model": "rainsenchants:item/shard/overpower"
+        }
+      },
+      {
+        "when": "rainsenchants:undying",
+        "model": {
+          "type": "minecraft:model",
+          "model": "rainsenchants:item/shard/undying"
+        }
+      },
+      {
+        "when": "rainsenchants:fusion",
+        "model": {
+          "type": "minecraft:model",
+          "model": "rainsenchants:item/shard/fusion"
+        }
+      },
+      {
+        "when": "rainsenchants:autopilot",
+        "model": {
+          "type": "minecraft:model",
+          "model": "rainsenchants:item/shard/autopilot"
+        }
+      },
+      {
+        "when": "rainsenchants:reinforced",
+        "model": {
+          "type": "minecraft:model",
+          "model": "rainsenchants:item/shard/reinforced"
+        }
+      },
+      {
+        "when": "rainsenchants:xp_siphon",
+        "model": {
+          "type": "minecraft:model",
+          "model": "rainsenchants:item/shard/xp_siphon"
+        }
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "minecraft:item/echo_shard"
+    }
+  }
+}
