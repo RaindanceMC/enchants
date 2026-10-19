@@ -31,7 +31,7 @@ public final class EnchantsDefinitions {
                 EnchantDef.builder(RainsEnchants.DOUBLE_JUMP).name("<green>Double Jump").maxLevel(3)
                         .gear(Gear.BOOTS).anvilCost(5).build(),
                 EnchantDef.builder(RainsEnchants.AUTO_SELL).name("<gold>Auto Sell").maxLevel(1)
-                        .gear(Gear.HAND_TOOLS).anvilCost(6).build(),
+                        .gear(Gear.SELLING).anvilCost(6).build(),
                 EnchantDef.builder(RainsEnchants.BOOST).name("<aqua>Boost").maxLevel(3)
                         .gear(Gear.ELYTRA).anvilCost(6).build(),
                 EnchantDef.builder(RainsEnchants.LAUNCH).name("<red>Launch").maxLevel(3)

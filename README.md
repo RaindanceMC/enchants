@@ -15,7 +15,7 @@ Needs Java 25 and read access to `packages.tstieh.de` (server ids `packages-rele
 
 ## Plugins
 
-- `enchants-standalone/target/RainsEnchants-0.31.0.jar` — also published as `de.raindancer.modules:enchants-standalone:0.31.0`
+- `enchants-standalone/target/RainsEnchants-0.32.0.jar` — also published as `de.raindancer.modules:enchants-standalone:0.32.0`
 
 ## Versions
 

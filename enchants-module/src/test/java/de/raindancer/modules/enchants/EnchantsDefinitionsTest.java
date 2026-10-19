@@ -45,7 +45,7 @@ class EnchantsDefinitionsTest {
         assertThat(def(RainsEnchants.HARVESTER).gear()).isEqualTo(Gear.HOE);
         assertThat(def(RainsEnchants.EXCAVATOR).gear()).isEqualTo(Gear.EXCAVATING_TOOLS);
         assertThat(def(RainsEnchants.SOULBOUND).gear()).isEqualTo(Gear.ANY_GEAR);
-        assertThat(def(RainsEnchants.AUTO_SELL).gear()).isEqualTo(Gear.HAND_TOOLS);
+        assertThat(def(RainsEnchants.AUTO_SELL).gear()).as("tools, and a chest for the selling chest").isEqualTo(Gear.SELLING);
 
         assertThat(def(RainsEnchants.EXCAVATOR).exclusiveWith()).contains(RainsEnchants.VEINMINER);
         assertThat(def(RainsEnchants.SMELTING).exclusiveWith()).contains("minecraft:silk_touch");
