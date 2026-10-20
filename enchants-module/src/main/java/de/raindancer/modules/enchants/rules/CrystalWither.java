@@ -31,6 +31,20 @@ public final class CrystalWither {
     private CrystalWither() {
     }
 
+    /**
+     * What a block is, as far as the build cares. A lower corner only has to be free to stand in: air, or anything
+     * a block could be placed into — leaf litter, grass, flowers, a snow layer — as players expect from the ground.
+     *
+     * @param replaceable whether the block may be built into ({@code Block#isReplaceable})
+     */
+    public static Part part(String material, boolean replaceable) {
+        return switch (material) {
+            case "AMETHYST_BLOCK" -> Part.AMETHYST;
+            case "WITHER_SKELETON_SKULL", "WITHER_SKELETON_WALL_SKULL" -> Part.SKULL;
+            default -> replaceable || material.endsWith("AIR") ? Part.AIR : Part.OTHER;
+        };
+    }
+
     /** What one drops: a ton of shards, forty to sixty. */
     public static int shards(java.util.random.RandomGenerator random) {
         return 40 + random.nextInt(21);

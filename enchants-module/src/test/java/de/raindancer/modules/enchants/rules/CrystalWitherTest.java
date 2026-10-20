@@ -84,4 +84,16 @@ class CrystalWitherTest {
         assertThat(least).isGreaterThanOrEqualTo(40);
         assertThat(most).isLessThanOrEqualTo(60).isGreaterThan(55);
     }
+
+    @Test
+    @DisplayName("what a block is to the build: leaf litter, grass or a snow layer in a lower corner count as empty")
+    void parts() {
+        assertThat(CrystalWither.part("AMETHYST_BLOCK", false)).isEqualTo(CrystalWither.Part.AMETHYST);
+        assertThat(CrystalWither.part("WITHER_SKELETON_SKULL", false)).isEqualTo(CrystalWither.Part.SKULL);
+        assertThat(CrystalWither.part("WITHER_SKELETON_WALL_SKULL", false)).isEqualTo(CrystalWither.Part.SKULL);
+        assertThat(CrystalWither.part("AIR", true)).isEqualTo(CrystalWither.Part.AIR);
+        assertThat(CrystalWither.part("LEAF_LITTER", true)).as("found on Lilly, 20.10.2026").isEqualTo(CrystalWither.Part.AIR);
+        assertThat(CrystalWither.part("SHORT_GRASS", true)).isEqualTo(CrystalWither.Part.AIR);
+        assertThat(CrystalWither.part("STONE", false)).isEqualTo(CrystalWither.Part.OTHER);
+    }
 }

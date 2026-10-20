@@ -30,14 +30,7 @@ public final class CrystalWitherListener implements IEnchantsListener {
     }
 
     private static CrystalWither.Part part(Block block) {
-        Material type = block.getType();
-        if (type == Material.AMETHYST_BLOCK) {
-            return CrystalWither.Part.AMETHYST;
-        }
-        if (type == Material.WITHER_SKELETON_SKULL || type == Material.WITHER_SKELETON_WALL_SKULL) {
-            return CrystalWither.Part.SKULL;
-        }
-        return type.isAir() ? CrystalWither.Part.AIR : CrystalWither.Part.OTHER;
+        return CrystalWither.part(block.getType().name(), block.isReplaceable());
     }
 
     /**
