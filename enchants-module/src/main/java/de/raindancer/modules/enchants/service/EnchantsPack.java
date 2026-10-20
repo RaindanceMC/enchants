@@ -2,18 +2,12 @@ package de.raindancer.modules.enchants.service;
 
 import de.raindancer.core.RainsCore;
 import de.raindancer.core.content.enchant.EnchantDef;
-import de.raindancer.core.content.pack.PackContribution;
+import de.raindancer.core.content.pack.JarPack;
 import de.raindancer.core.platform.log.Log;
-import de.raindancer.core.platform.util.Scheduling;
 import de.raindancer.modules.enchants.EnchantsDefinitions;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,30 +35,14 @@ public final class EnchantsPack {
         return files;
     }
 
-    /** Offers the pack; a server that has already built its pack builds again, so nobody waits for a restart. */
+    /** Offers the pack through Core's {@code JarPack}. */
     public static void contribute(Plugin plugin, RainsCore core) {
-        Path folder = plugin.getDataFolder().toPath().resolve("pack").resolve(NAME);
         try {
-            for (String file : files()) {
-                Path target = folder.resolve(file);
-                Files.createDirectories(target.getParent());
-                try (InputStream in = EnchantsPack.class.getResourceAsStream(ROOT + file)) {
-                    if (in == null) {
-                        throw new IOException(file + " is missing from the jar");
-                    }
-                    Files.copy(in, target, StandardCopyOption.REPLACE_EXISTING);
-                }
-            }
+            JarPack.offer(plugin, core.resourcePacks(), EnchantsPack.class, ROOT, files(), OWNER, NAME,
+                    "A look of its own for every shard");
         } catch (IOException failure) {
             Log.of("enchants").warn("The shards' looks could not be written ({}); they work, but look like echo shards.",
                     failure.getMessage());
-            return;
-        }
-        var packs = core.resourcePacks();
-        packs.contribute(PackContribution.of(OWNER, NAME, folder).describedAs("A look of its own for every shard"));
-        if (packs.current().isPresent()) {
-            Scheduling.async(plugin, () -> packs.rebuild().ifPresent(built -> packs.sendToAll(
-                    plugin.getServer().getOnlinePlayers().stream().map(Player::getUniqueId).toList())));
         }
     }
 
