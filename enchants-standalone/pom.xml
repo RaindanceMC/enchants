@@ -55,7 +55,8 @@
         <!-- 0.30.0: the last five seconds of Flight tick (Cues.COUNTDOWN), running out sounds Cues.COUNTDOWN_DONE. -->
         <!-- 0.34.0: a mace with Thor is Mjölnir — a model of its own; ready, a quiet lightning cage crackles round its head; on cooldown after a throw it recharges in four livelier stages (the pack reads the cooldown); it flies crackling. -->
         <!-- 0.34.1: Mjölnir held the right way round — its head runs front to back in the hand, not across. -->
-        <plugin.version>0.34.1</plugin.version>
+        <!-- 0.34.2: Mjölnir held like the mace — gripped near the pommel, the head angled up and forward. -->
+        <plugin.version>0.34.2</plugin.version>
     </properties>
 
     <dependencies>
