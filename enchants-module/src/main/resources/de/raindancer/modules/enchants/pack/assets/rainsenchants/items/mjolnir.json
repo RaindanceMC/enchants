@@ -1,0 +1,49 @@
+{
+  "model": {
+    "type": "minecraft:condition",
+    "property": "minecraft:custom_model_data",
+    "index": 0,
+    "on_true": {
+      "type": "minecraft:model",
+      "model": "rainsenchants:item/mjolnir_charge_4"
+    },
+    "on_false": {
+      "type": "minecraft:range_dispatch",
+      "property": "minecraft:cooldown",
+      "entries": [
+        {
+          "threshold": 0.01,
+          "model": {
+            "type": "minecraft:model",
+            "model": "rainsenchants:item/mjolnir_charge_4"
+          }
+        },
+        {
+          "threshold": 0.25,
+          "model": {
+            "type": "minecraft:model",
+            "model": "rainsenchants:item/mjolnir_charge_3"
+          }
+        },
+        {
+          "threshold": 0.5,
+          "model": {
+            "type": "minecraft:model",
+            "model": "rainsenchants:item/mjolnir_charge_2"
+          }
+        },
+        {
+          "threshold": 0.75,
+          "model": {
+            "type": "minecraft:model",
+            "model": "rainsenchants:item/mjolnir_charge_1"
+          }
+        }
+      ],
+      "fallback": {
+        "type": "minecraft:model",
+        "model": "rainsenchants:item/mjolnir"
+      }
+    }
+  }
+}

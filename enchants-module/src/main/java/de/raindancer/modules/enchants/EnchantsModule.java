@@ -54,7 +54,7 @@ public final class EnchantsModule implements FlexModule {
     /** Chest Link drops are gathered this many ticks before they are sent. */
     private static final int LINK_EVERY = 20;
 
-    private static final ModuleInfo INFO = ModuleInfo.of("enchants", "Enchants", "0.33.2")
+    private static final ModuleInfo INFO = ModuleInfo.of("enchants", "Enchants", "0.34.0")
             .describedAs("Thirty real enchantments, their shards and the shard world, with advancements")
             .by("Raindancer118");
 
@@ -141,7 +141,7 @@ public final class EnchantsModule implements FlexModule {
                 purple.convert(chunk);
             }
         });
-        context.listener(new de.raindancer.modules.enchants.listener.ShardLookListener());
+        context.listener(new de.raindancer.modules.enchants.listener.LookListener(context.plugin()));
         de.raindancer.modules.enchants.service.EnchantsPack.contribute(context.plugin(), context.core());
         context.closeWith(() -> de.raindancer.modules.enchants.service.EnchantsPack.withdraw(context.core()));
         context.listener(new ShardListener(shardWorlds, portals,

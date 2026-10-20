@@ -70,7 +70,8 @@ public final class ThorService {
             return false;
         }
         thrower.setCooldown(held.getType(), Thor.cooldownTicks(level));
-        ItemStack likeness = held.clone();
+        // Flies fully charged; the one in hand recharges with its cooldown (the pack reads that itself).
+        ItemStack likeness = WeaponLooks.flying(held);
         likeness.setAmount(1);
         Vector aim = thrower.getEyeLocation().getDirection();
         fly(thrower, likeness, level, aim);

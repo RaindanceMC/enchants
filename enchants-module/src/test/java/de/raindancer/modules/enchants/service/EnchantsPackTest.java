@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -82,5 +83,69 @@ class EnchantsPackTest {
         JsonObject pack = json("pack.mcmeta").getAsJsonObject("pack");
         assertThat(pack.get("min_format").getAsInt()).isLessThanOrEqualTo(88);
         assertThat(pack.get("max_format").getAsInt()).isGreaterThanOrEqualTo(97);
+    }
+
+    @Test
+    @DisplayName("Mjölnir: its item definition, 3D model (with a held, icon and ground look) and texture all ship")
+    void mjolnir() throws IOException {
+        String item = "assets/rainsenchants/items/mjolnir.json";
+        assertThat(EnchantsPack.files()).contains(item);
+        for (String model : List.of("mjolnir", "mjolnir_charge_1", "mjolnir_charge_2", "mjolnir_charge_3",
+                            "mjolnir_charge_4")) {
+            assertThat(json(item).toString()).as(model).contains("\"rainsenchants:item/" + model + "\"");
+            checkModel("assets/rainsenchants/models/item/" + model + ".json");
+        }
+        for (String texture : List.of("mjolnir_cage", "mjolnir_cage_outer", "mjolnir_lightning_1", "mjolnir_lightning_2",
+                "mjolnir_lightning_3", "mjolnir_lightning_4")) {
+            assertThat(EnchantsPack.files()).as(texture).contains("assets/rainsenchants/textures/item/" + texture + ".png.mcmeta");
+            assertThat(json("assets/rainsenchants/textures/item/" + texture + ".png.mcmeta").has("animation")).isTrue();
+        }
+    }
+
+    @Test
+    @DisplayName("Mjölnir in flight crackles liveliest; on cooldown it recharges stage by stage; ready it wears its cage")
+    void mjolnirCharges() throws IOException {
+        JsonObject flying = json("assets/rainsenchants/items/mjolnir.json").getAsJsonObject("model");
+        assertThat(flying.get("property").getAsString()).isEqualTo("minecraft:custom_model_data");
+        assertThat(flying.get("index").getAsInt()).isZero();
+        assertThat(flying.getAsJsonObject("on_true").get("model").getAsString()).isEqualTo("rainsenchants:item/mjolnir_charge_4");
+        JsonObject recharging = flying.getAsJsonObject("on_false");
+        assertThat(recharging.get("type").getAsString()).isEqualTo("minecraft:range_dispatch");
+        assertThat(recharging.get("property").getAsString()).isEqualTo("minecraft:cooldown");
+        assertThat(recharging.getAsJsonObject("fallback").get("model").getAsString()).isEqualTo("rainsenchants:item/mjolnir");
+        assertThat(json("assets/rainsenchants/models/item/mjolnir.json").getAsJsonObject("textures").toString())
+                .as("ready, the cage").contains("rainsenchants:item/mjolnir_cage");
+        var entries = recharging.getAsJsonArray("entries");
+        // The cooldown counts down from 1: the most left shows the first stage, nearly ready the last.
+        Map<Double, String> stages = new java.util.TreeMap<>();
+        for (var entry : entries) {
+            stages.put(entry.getAsJsonObject().get("threshold").getAsDouble(),
+                    entry.getAsJsonObject().getAsJsonObject("model").get("model").getAsString());
+        }
+        assertThat(stages.values()).containsExactly("rainsenchants:item/mjolnir_charge_4",
+                "rainsenchants:item/mjolnir_charge_3", "rainsenchants:item/mjolnir_charge_2",
+                "rainsenchants:item/mjolnir_charge_1");
+        assertThat(stages.keySet().iterator().next()).as("ready (0 left) is the caged look").isGreaterThan(0);
+    }
+
+    private static void checkModel(String file) throws IOException {
+        assertThat(EnchantsPack.files()).contains(file);
+        JsonObject json = json(file);
+        assertThat(json.getAsJsonArray("elements")).isNotEmpty();
+        for (String slot : List.of("thirdperson_righthand", "firstperson_righthand", "gui", "ground", "fixed")) {
+            assertThat(json.getAsJsonObject("display").has(slot)).as(slot).isTrue();
+        }
+        for (var element : json.getAsJsonArray("elements")) {
+            for (String corner : List.of("from", "to")) {
+                for (var coordinate : element.getAsJsonObject().getAsJsonArray(corner)) {
+                    assertThat(coordinate.getAsDouble()).as("Minecraft refuses elements outside -16..32")
+                            .isBetween(-16.0, 32.0);
+                }
+            }
+        }
+        for (var texture : json.getAsJsonObject("textures").entrySet()) {
+            assertThat(EnchantsPack.files()).as(texture.getKey()).contains(
+                    "assets/rainsenchants/textures/" + texture.getValue().getAsString().split(":")[1] + ".png");
+        }
     }
 }

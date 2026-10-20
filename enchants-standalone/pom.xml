@@ -53,7 +53,8 @@
         <!-- 0.28.0: no hourly shard limit any more (setting shards-per-hour removed): every shard a creature drops is found. -->
         <!-- 0.29.0: Flight shows the time left on the action bar while flying, red in the last five seconds. -->
         <!-- 0.30.0: the last five seconds of Flight tick (Cues.COUNTDOWN), running out sounds Cues.COUNTDOWN_DONE. -->
-        <plugin.version>0.33.2</plugin.version>
+        <!-- 0.34.0: a mace with Thor is Mjölnir — a model of its own; ready, a quiet lightning cage crackles round its head; on cooldown after a throw it recharges in four livelier stages (the pack reads the cooldown); it flies crackling. -->
+        <plugin.version>0.34.0</plugin.version>
     </properties>
 
     <dependencies>

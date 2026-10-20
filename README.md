@@ -15,7 +15,14 @@ Needs Java 25 and read access to `packages.tstieh.de` (server ids `packages-rele
 
 ## Plugins
 
-- `enchants-standalone/target/RainsEnchants-0.33.2.jar` — also published as `de.raindancer.modules:enchants-standalone:0.33.2`
+- `enchants-standalone/target/RainsEnchants-0.34.0.jar` — also published as `de.raindancer.modules:enchants-standalone:0.34.0`
+
+## Mjölnir
+
+A weapon that becomes something else (a mace with Thor → Mjölnir) is a `WeaponLook`. Mjölnir's source is
+`enchants-module/art/mjolnir.bbmodel`: cubes ending `_sN` belong to one model only (`_s0` the ready cage → `mjolnir`,
+`_s1`–`_s4` the recharge stages → `mjolnir_charge_N`); export each with only its own `_sN` cubes. The animated lightning
+textures come from `python3 enchants-module/art/mjolnir/lightning.py <dir>`.
 
 ## Versions
 
