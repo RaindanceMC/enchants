@@ -54,7 +54,8 @@
         <!-- 0.29.0: Flight shows the time left on the action bar while flying, red in the last five seconds. -->
         <!-- 0.30.0: the last five seconds of Flight tick (Cues.COUNTDOWN), running out sounds Cues.COUNTDOWN_DONE. -->
         <!-- 0.34.0: a mace with Thor is Mjölnir — a model of its own; ready, a quiet lightning cage crackles round its head; on cooldown after a throw it recharges in four livelier stages (the pack reads the cooldown); it flies crackling. -->
-        <plugin.version>0.34.0</plugin.version>
+        <!-- 0.34.1: Mjölnir held the right way round — its head runs front to back in the hand, not across. -->
+        <plugin.version>0.34.1</plugin.version>
     </properties>
 
     <dependencies>
