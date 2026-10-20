@@ -9,6 +9,7 @@ import de.raindancer.core.ui.actionbar.ActionBars;
 import de.raindancer.core.ui.effect.Cues;
 import de.raindancer.core.ui.effect.Effects;
 import de.raindancer.core.ui.messages.Messages;
+import de.raindancer.core.world.movement.Flight;
 import de.raindancer.modules.enchants.EnchantAdvancements;
 import de.raindancer.modules.enchants.EnchantsSettings;
 import de.raindancer.modules.enchants.model.AirState;
@@ -31,8 +32,9 @@ import java.util.function.Supplier;
  * Flight on a chestplate and Double Jump on boots, which share one thing — the player's permission to
  * fly — and so share one owner. Run on the player's own thread, once a tick.
  *
- * <p>Creative and spectator players are left alone entirely, and so is flight somebody else granted:
- * only a permission this class set is ever taken back.
+ * <p>Flight is a lease on Core's {@link Flight}, so taking the chestplate off inside a flying claim or under
+ * {@code /fly} leaves that flight on. While another source lends flight it is free: no charge drains and no
+ * double tap is spent as a jump. Creative and spectator players are left alone entirely.
  */
 public final class AirService {
 
@@ -40,6 +42,7 @@ public final class AirService {
     private static final int TRAIL_EVERY = 10;
 
     static final String FLIGHT_BAR = "enchants-flight";
+    static final String FLIGHT_SOURCE = "enchants-flight";
     private static final String FLIGHT_NOTICE = "enchants-flight-notice";
     private static final Duration NOTICE_FOR = Duration.ofSeconds(3);
 
@@ -54,11 +57,12 @@ public final class AirService {
     private final Effects effects;
     private final Messages messages;
     private final ActionBars actionBars;
+    private final Flight flight;
     private final Map<UUID, AirState> states = new ConcurrentHashMap<>();
 
     public AirService(AirRule rule, AirStore store, Supplier<EnchantsSettings> settings,
                       EnchantAdvancements advancements, Effects effects, Messages messages,
-                      ActionBars actionBars) {
+                      ActionBars actionBars, Flight flight) {
         this.rule = rule;
         this.store = store;
         this.settings = settings;
@@ -66,6 +70,7 @@ public final class AirService {
         this.effects = effects;
         this.messages = messages;
         this.actionBars = actionBars;
+        this.flight = flight;
     }
 
     /** Lets the charge follow the player between servers, and re-reads it when it arrives after a join. */
@@ -105,7 +110,10 @@ public final class AirService {
         long elapsed = Math.min(LONGEST_STEP_MILLIS, (now - state.lastNanos) / 1_000_000L);
         state.lastNanos = now;
         if (player.getGameMode() == GameMode.CREATIVE || player.getGameMode() == GameMode.SPECTATOR) {
-            state.granted = false;
+            if (state.granted) {
+                state.granted = false;
+                this.flight.revoke(player, FLIGHT_SOURCE);
+            }
             showFlightBar(player, state, false);
             return;
         }
@@ -120,7 +128,8 @@ public final class AirService {
             state.jumpsUsed = 0;
         }
 
-        if (player.isFlying() && state.granted) {
+        boolean lent = lentElsewhere(player);
+        if (player.isFlying() && state.granted && !lent) {
             if (player.getTicksLived() % TRAIL_EVERY == 0) {
                 player.getWorld().spawnParticle(org.bukkit.Particle.END_ROD, player.getLocation(), 2, 0.2, 0.05, 0.2, 0.01);
             }
@@ -142,18 +151,32 @@ public final class AirService {
             state.budget.recharge(elapsed, capacity, config.flightRechargeSeconds() * 1000L);
         }
 
-        showFlightBar(player, state, player.isFlying() && state.granted
+        showFlightBar(player, state, player.isFlying() && state.granted && !lent
                 && rule.mayFly(flight, state.budget.remainingMillis()));
 
-        boolean want = now >= state.holdUntilNanos
-                && rule.allowFlight(flight, state.budget.remainingMillis(), jump, state.jumpsUsed);
-        if (want && !player.getAllowFlight()) {
-            player.setAllowFlight(true);
-            state.granted = true;
-        } else if (!want && state.granted) {
+        if (rule.allowFlight(flight, state.budget.remainingMillis(), jump, state.jumpsUsed)) {
+            // Not during a jump's hold: granting again would switch flight straight back on.
+            if (now >= state.holdUntilNanos) {
+                this.flight.grant(player, FLIGHT_SOURCE);
+                state.granted = true;
+            }
+        } else if (state.granted) {
             state.granted = false;
-            player.setAllowFlight(false);
+            this.flight.revoke(player, FLIGHT_SOURCE);
         }
+    }
+
+    /** Whether something besides this lets them fly — a claim, {@code /fly}, vanish. */
+    private boolean lentElsewhere(Player player) {
+        if (flight.hasOwnFlight(player)) {
+            return true;
+        }
+        for (String source : flight.sources(player.getUniqueId())) {
+            if (!source.equals(FLIGHT_SOURCE)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /** The time left on the action bar while flying, ticking through the last seconds; drawn again only when the second shown changes. */
@@ -182,7 +205,7 @@ public final class AirService {
     /** @return true to cancel the toggle: it was a jump, or flight that is not available */
     public boolean onToggleFlight(Player player, boolean startsFlying) {
         AirState state = states.get(player.getUniqueId());
-        if (!startsFlying || state == null || !state.granted) {
+        if (!startsFlying || state == null || !state.granted || lentElsewhere(player)) {
             return false;
         }
         int flight = CustomEnchantments.levelOn(player.getInventory().getChestplate(), RainsEnchants.FLIGHT);
@@ -212,6 +235,8 @@ public final class AirService {
         // Right after the push the player still reads as standing; counting that as a landing would
         // hand the jump straight back.
         state.airborneUntilNanos = System.nanoTime() + AIRBORNE_NANOS;
+        // The switch itself, not the lease: only this lease lets them fly (see onToggleFlight), and a revoke would
+        // float them down on Slow Falling. The next grant after the hold switches it back on.
         player.setAllowFlight(false);
         effects.play(player.getUniqueId(), Cues.ABILITY);
         player.getWorld().spawnParticle(org.bukkit.Particle.CLOUD, player.getLocation(), 8, 0.3, 0.05, 0.3, 0.02);
@@ -274,7 +299,7 @@ public final class AirService {
         showFlightBar(player, state, false);
         if (state.granted) {
             state.granted = false;
-            player.setAllowFlight(false);
+            flight.revoke(player, FLIGHT_SOURCE);
         }
     }
 }

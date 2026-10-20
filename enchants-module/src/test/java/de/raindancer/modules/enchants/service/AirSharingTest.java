@@ -64,7 +64,7 @@ class AirSharingTest {
     @DisplayName("the namespace the charge lives in is the one handed to Core")
     void sharesItsNamespace() {
         RainsCore core = mock(RainsCore.class);
-        new AirService(new AirRule(), store, null, null, null, null, null).follow(core);
+        new AirService(new AirRule(), store, null, null, null, null, null, null).follow(core);
         verify(core).sharePlayerData(AirStore.NAMESPACE);
     }
 
@@ -73,7 +73,7 @@ class AirSharingTest {
     @DisplayName("a charge that arrives after the player joined replaces the one read too early")
     void arrivalRefreshesCache() {
         RainsCore core = mock(RainsCore.class);
-        AirService air = new AirService(new AirRule(), store, null, null, null, null, null);
+        AirService air = new AirService(new AirRule(), store, null, null, null, null, null, null);
         air.follow(core);
         ArgumentCaptor<BiConsumer<Player, Set<String>>> listener = ArgumentCaptor.forClass(BiConsumer.class);
         verify(core).onSharedDataApplied(listener.capture());

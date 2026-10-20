@@ -41,7 +41,7 @@ class FlightBarTest {
     void setUp() {
         when(player.getUniqueId()).thenReturn(id);
         when(messages.get(anyString(), any(Object[].class))).thenAnswer(call -> Component.text(call.<String>getArgument(0)));
-        air = new AirService(new AirRule(), new AirStore(), null, null, effects, messages, bars);
+        air = new AirService(new AirRule(), new AirStore(), null, null, effects, messages, bars, null);
     }
 
     private static AirState withLeft(long millis) {
