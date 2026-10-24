@@ -1,0 +1,39 @@
+id: enchants-staff
+title: Enchantments for staff
+summary: "Handing out books, shards and /give, summoning shard-world creatures, switching enchantments off."
+intro: |
+  A tidy toolbox for anyone with the badge.
+icon: COMMAND_BLOCK
+category: Staff
+order: 30
+module: enchants
+permission: rainsenchants.give
+aliases: [enchants-give, give]
+keywords: [give, books, shards, shardmob, summon, switch off]
+commands: [give]
+related: [enchants, staff-tools]
+wiki: https://wiki.raindancer118.de/enchants
+sections:
+  - question: How do I hand out books?
+    title: Books
+    text: |
+      {cmd:/enchants give [player] [enchantment] [level]} gives an enchanted book, level from 1 up to the enchantment's maximum. If the inventory is full it drops at their feet.
+  - question: How do I hand out shards?
+    title: Shards
+    text: |
+      {cmd:/enchants shard [player] [enchantment] [amount]} — amount up to 6400 in stacks of 64. Good for events and tests.
+  - question: Can /give do this too?
+    title: /give
+    permission: minecraft.command.give
+    text: |
+      Yes: {cmd:/give [player] telekinesis_shard 64}, {cmd:/give [player] flight_book} (highest level) or {cmd:/give [player] flight_book_3 2}. Selectors work. Any other item goes to the game's own /give exactly as typed.
+  - question: How do I summon a shard-world creature?
+    title: Shard mobs
+    permission: rainsenchants.shardmob
+    text: |
+      {cmd:/enchants shardmob [mob] [player]} calls one next to them, as if it had come by itself.
+  - question: How do I switch an enchantment off?
+    title: Switching off
+    text: |
+      In {run:/settings} under the enchantments, list it under <b>switched-off</b>. It then does nothing, drops no shards, is not sold and cannot go on at an anvil; items keep it. The Fully Enchanted advancement counts the ones that are on at the last start.
+      Currently switched off: {if:enchants:switched-off}{setting:enchants:switched-off}{else}none{/if}. All the numbers (flight time, recharge, speeds, cooldowns, shard drops, the shard world) are settings too.

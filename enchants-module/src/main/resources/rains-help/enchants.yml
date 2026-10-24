@@ -1,0 +1,53 @@
+id: enchants
+title: Rain's Enchantments
+summary: Enchantments you will not find at an enchanting table — how to earn shards, unlock a book and put it on your gear.
+intro: |
+  Vanilla enchantments are for people with no ambition. These you have to <i>earn</i>: shards from a night-soaked world full of monsters, a guild to unlock them, a book from the shop. I have the full list.
+icon: ENCHANTED_BOOK
+category: Items & enchantments
+order: 20
+module: enchants
+aliases: [enchantments, enchantment, shards, shard, books, rain-enchants, custom-enchants]
+keywords: [rarity, anvil, book, unlock, guild, legendary, rare, common]
+commands: [enchants]
+related: [shard-world, enchants-tools, enchants-armour, enchants-weapons, enchants-gear]
+wiki: https://wiki.raindancer118.de/enchants
+sections:
+  - question: How do I get an enchantment?
+    title: Getting them
+    text: |
+      <b>1.</b> Open a portal to the {topic:shard-world} and kill monsters there — they drop <b>shards</b> of the enchantments.
+      <b>2.</b> Your <b>guild</b> pays shards into the unlock of one enchantment together ({cmd:/guild shards}). From then on everybody in the guild may buy its books. No guild? Join one, or found your own.
+      <b>3.</b> Buy the <b>book</b> at the shop: it costs shards of that enchantment plus money, and a higher level costs more of both.
+      <b>4.</b> Put it on at an anvil. Anvils never say "too expensive" for these. Two books of the same level make the next level, as in vanilla — often cheaper than buying the higher one.
+      Shards are ordinary items: you can trade, sell or auction them.
+  - question: What kinds of enchantments exist?
+    title: The list
+    text: |
+      {run:/enchants list} prints every one in chat with its top level and what it goes on. Sorted for you:
+      {topic:enchants-tools} — mining, farming, drops, experience.
+      {topic:enchants-armour} — night vision, speed, jumping, flight, totems, elytra tricks.
+      {topic:enchants-weapons} — damage, healing, poison, homing, Mjölnir.
+      {topic:enchants-gear} — Soulbound and Reinforced, for anything.
+  - question: How rare is each one?
+    title: Rarity
+    text: |
+      <white>Common</white> · <green>Uncommon</green> · <aqua>Rare</aqua> · <gold>Legendary</gold>. Rarer enchantments drop less often, and the <b>legendary</b> ones — Thor and Reinforced — never drop from ordinary monsters at all (see {topic:shard-world}).
+  - question: Do combat enchantments work on players?
+    title: Against players
+    text: |
+      Overpower, Executioner, Berserk, Armor Pierce, Lifesteal, Bleed, Venom and Cleave only count <b>half</b> against players. Thor, Heat-seeking and Volley are not halved. Everything also only hits what the server lets you fight — claims and safe zones still rule.
+  - question: Why is an enchantment doing nothing?
+    title: Switched off
+    text: |
+      Staff can switch any enchantment off. A switched-off one does nothing, drops no shards, is not sold and cannot be put on at an anvil — but items keep it, and it works again the moment it is back on.
+      {if:enchants:switched-off}Right now switched off: <b>{setting:enchants:switched-off}</b>.{else}Right now nothing is switched off.{/if}
+      Numbers on these pages are quoted from this server's settings, so what you read here is what you get.
+  - question: Do they stack with vanilla enchantments?
+    title: With vanilla
+    text: |
+      Yes. They sit beside Unbreaking, Sharpness and friends. A few pairs refuse each other: Veinminer and Excavator, Smelting and Silk Touch, Chest Link and Telekinesis. An anvil tells you if you try.
+  - question: Is there more to read?
+    title: Wiki
+    text: |
+      Every enchantment has a page of its own, with its shard in 3D: {url:https://wiki.raindancer118.de/enchants|the enchantments wiki}.

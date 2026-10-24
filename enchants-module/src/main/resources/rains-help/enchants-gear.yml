@@ -1,0 +1,22 @@
+id: enchants-gear
+title: Soulbound and Reinforced
+summary: Two enchantments that go on any gear — keeping it through death, and wearing it out less.
+intro: |
+  Dying is bad. Losing your gear as well is worse. Two cures.
+icon: TOTEM_OF_UNDYING
+category: Items & enchantments
+order: 25
+module: enchants
+aliases: [soulbound, reinforced, keep, durability, death]
+keywords: [keep item, unbreaking, wear]
+related: [enchants]
+wiki: https://wiki.raindancer118.de/enchants
+sections:
+  - question: What does Soulbound do?
+    title: Soulbound
+    text: |
+      The item stays with you when you die and is in your inventory when you respawn. Each death costs one level: level III survives 3 deaths, and on the last one you still keep the item, but Soulbound is used up. It works for everything with it at once — armour, hotbar, inventory, off hand. Your experience is still lost as usual. With keep-inventory on, it does nothing and loses nothing. {url:https://wiki.raindancer118.de/enchants/soulbound|wiki}
+  - question: What does Reinforced do?
+    title: Reinforced
+    text: |
+      <b>Legendary.</b> Every time the item would lose durability, there is a {setting:enchants:reinforced-percent-per-level|percent} chance per level that it does not — never more than nine in ten, so nothing becomes unbreakable. It works on top of Unbreaking: that goes first, then Reinforced rolls on what is left. Reinforced armour looks different, worn and in the inventory. Its shards only drop from wardens and the Crystal Wither. {url:https://wiki.raindancer118.de/enchants/reinforced|wiki}

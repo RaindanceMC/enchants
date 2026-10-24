@@ -1,0 +1,55 @@
+id: enchants-tools
+title: Tool enchantments
+summary: Veinminer, Excavator, Haste, Smelting, Telekinesis, Chest Link, Auto Sell, XP Siphon, Wisdom and Harvester.
+intro: |
+  For people who would rather dig less and collect more. Ten enchantments, all on pickaxes, axes, shovels or hoes.
+icon: DIAMOND_PICKAXE
+category: Items & enchantments
+order: 22
+module: enchants
+aliases: [veinminer, excavator, haste, smelting, telekinesis, chestlink, autosell, xpsiphon, wisdom, harvester, vein]
+keywords: [mining, farming, drops, experience, autosell chest, 3x3, replant]
+related: [enchants, enchants-gear]
+wiki: https://wiki.raindancer118.de/enchants
+sections:
+  - question: What does Veinminer do?
+    title: Veinminer
+    text: |
+      Break one block of a vein and the whole vein comes with it — ores, logs, whatever the server's vein mining counts. Pickaxes, axes and shovels. Without the enchantment you only get the block you hit.
+      {cmd:/vein} switches it on or off for you; {cmd:/ctrl-z} gives your last vein back (within 2 minutes, nearby, against returning what it dropped). Cannot go with Excavator. {url:https://wiki.raindancer118.de/enchants/veinminer|wiki}
+  - question: What does Excavator do?
+    title: Excavator
+    text: |
+      Every block you break takes the 8 around it: a 3×3, one deep — the wall in front of you, or floor and ceiling when you look steeply up or down. Only blocks the tool suits and not much harder than the one you hit. <b>Sneak</b> to mine a single block. Pickaxes and shovels; not with Veinminer. {url:https://wiki.raindancer118.de/enchants/excavator|wiki}
+  - question: What does Haste do?
+    title: Haste
+    text: |
+      Level I or II gives you Haste I or II while the tool is in your main hand — no particles. Haste from a beacon or potion is never touched. {url:https://wiki.raindancer118.de/enchants/haste|wiki}
+  - question: What does Smelting do?
+    title: Smelting
+    text: |
+      Blocks you mine drop smelted, as a furnace would make them, with the furnace's experience. Pickaxes, axes, shovels. It happens before Auto Sell, so you sell ingots. Cannot go with Silk Touch. {url:https://wiki.raindancer118.de/enchants/smelting|wiki}
+  - question: What does Telekinesis do?
+    title: Telekinesis
+    text: |
+      Drops from blocks you break and mobs you kill land straight in your inventory; what does not fit stays on the ground. It runs last, after Smelting and Auto Sell. Cannot go with Chest Link. {url:https://wiki.raindancer118.de/enchants/telekinesis|wiki}
+  - question: What does Chest Link do?
+    title: Chest Link
+    text: |
+      <b>Sneak and right-click</b> a chest, barrel or shulker box (you must be allowed to open it) to link the tool. What you mine then goes into that chest, from anywhere. Chest full, gone, or access lost? The drops come to you instead. Block drops only. {url:https://wiki.raindancer118.de/enchants/chest-link|wiki}
+  - question: What does Auto Sell do?
+    title: Auto Sell
+    text: |
+      On a tool: drops are sold on the spot at the shop's price; what the shop does not buy drops normally. On <b>one</b> chest (via anvil, crafting or the shop): an <b>Auto Sell Chest</b> that sells whatever goes in — by hand or hopper — and pays whoever placed it, even offline. Anybody may use it; it stays a single chest, explosions cannot break it. The shop's daily limits apply. {url:https://wiki.raindancer118.de/enchants/auto-sell|wiki}
+  - question: What does XP Siphon do?
+    title: XP Siphon
+    text: |
+      Experience from blocks and mobs goes straight into you instead of dropping as orbs. Mending gets it first, as with an orb. {url:https://wiki.raindancer118.de/enchants/xp-siphon|wiki}
+  - question: What does Wisdom do?
+    title: Wisdom
+    text: |
+      Every level adds {setting:enchants:wisdom-percent-per-level|percent} extra experience on top of the normal amount, so level III is three times that bonus. It counts blocks you break and mobs you kill — not fishing, bottles or the furnace experience from Smelting. {url:https://wiki.raindancer118.de/enchants/wisdom|wiki}
+  - question: What does Harvester do?
+    title: Harvester
+    text: |
+      A hoe that harvests <b>and replants</b>: level I the crop you hit, II a 3×3, III a 5×5. Wheat, carrots, potatoes, beetroots and nether wart, only when fully grown. Sneak to harvest just one. Each crop costs durability. {url:https://wiki.raindancer118.de/enchants/harvester|wiki}

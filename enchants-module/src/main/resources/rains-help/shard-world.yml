@@ -1,0 +1,45 @@
+id: shard-world
+title: The shard world
+summary: An endless night full of monsters — how to get in, what lives there and where the shards come from.
+intro: |
+  Always night, amplified hills, and far too many monsters. Charming. Bring a sword, a shield and a friend.
+icon: ECHO_SHARD
+category: Items & enchantments
+order: 21
+module: enchants
+when: enchants:shard-world-enabled
+aliases: [shards, shardlands, portal, shard-portal, crystal-wither, tyrant, overlord, warden]
+keywords: [monsters, drops, legendary, thunder, amethyst, night]
+related: [enchants]
+wiki: https://wiki.raindancer118.de/enchants#the-shard-world
+sections:
+  - question: How do I get in?
+    title: The portal
+    text: |
+      Build an obsidian frame like a nether portal, then right-click the <b>inside</b> of the frame with <b>{setting:enchants:portal-key|lower}</b>. It opens to the shard world and one is used up. Every portal over there leads back to where you came from.
+  - question: What is it like there?
+    title: The world
+    text: |
+      An amplified world in eternal night, with its border {setting:enchants:shard-world-radius|count} blocks from the middle. About {setting:enchants:shard-world-monsters|count} monsters are kept around players at once, and thunderstorms roll in for {setting:enchants:shard-world-thunder-percent|percent} of the time. Wolves, bees, golems, endermen, piglins and spiders there are always angry. Night vision helps a lot.
+      {if:enchants:shard-world-haze > 0}Dark red haze drifts around you; it is only decoration.{/if}
+  - question: Which monsters drop shards?
+    title: Monster kinds
+    text: |
+      Every monster that appears by itself is one of five kinds: <b>Shadowed</b> (normal health, 1 shard), <b>Shardborn</b> (×1.5, 2), <b>Crystal</b> (×2.5, 3–4), <b>Shard Tyrant</b> (×5, 6–8) and <b>Shard Overlord</b> (×8, 10–14). Tougher ones hit harder, wear more armour and drop rarer shards more often; Tyrants and Overlords glow.
+      A kill by a player drops its shards with a chance of {setting:enchants:shard-drop-percent|percent}, plus 30 to 50 % more on top.
+  - question: Are there special monsters?
+    title: Special foes
+    text: |
+      A Tyrant or Overlord zombie calls for help at half health. A Tyrant or Overlord skeleton fires like a minigun — bring a shield. Creepers explode far bigger, the tougher the creeper, the bigger the bang.
+  - question: Where do I find legendary shards?
+    title: Legendary shards
+    text: |
+      Thor and Reinforced shards drop only from two things. <b>Crystal Wardens</b>: about {setting:enchants:crystal-warden-per-mille|count} in a thousand monsters under the open sky come as a warden instead, dropping five times that kind's shards. And the <b>Crystal Wither</b>: build a wither in the shard world with <b>amethyst blocks instead of soul sand</b> and it drops a mountain of shards of every kind.
+  - question: Can I farm them with spawners?
+    title: No farms
+    text: |
+      No. Monsters from spawners, spawn eggs, breeding or commands never drop shards, and only a player's kill counts.
+  - question: Careful with shards and Auto Sell
+    title: Auto Sell warning
+    text: |
+      Shards sell like any item. Kill with an Auto Sell weapon in the shard world and your shards may turn into money on the spot.

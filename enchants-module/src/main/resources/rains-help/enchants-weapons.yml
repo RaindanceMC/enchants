@@ -1,0 +1,61 @@
+id: enchants-weapons
+title: Weapon enchantments
+summary: Overpower, Executioner, Berserk, Armor Pierce, Lifesteal, Bleed, Venom, Cleave, Heat-seeking, Volley and Thor.
+intro: |
+  Eleven ways to improve an argument. Remember: most only count half against players. I do not make the rules. Well, not those.
+icon: NETHERITE_SWORD
+category: Items & enchantments
+order: 24
+module: enchants
+aliases: [overpower, executioner, berserk, armorpierce, lifesteal, bleed, venom, cleave, heatseeking, volley, thor, mjolnir, hammer]
+keywords: [damage, melee, bow, trident, mace, axe, lightning, homing, poison, wither]
+commands: [heatseeking]
+related: [enchants, enchants-gear]
+wiki: https://wiki.raindancer118.de/enchants
+sections:
+  - question: What does Overpower do?
+    title: Overpower
+    text: |
+      Melee hits do +1.5 damage per level (level V: +7.5). Applied before Executioner and Berserk, so their percentages grow with it. Swords, axes, maces, spears. {url:https://wiki.raindancer118.de/enchants/overpower|wiki}
+  - question: What does Executioner do?
+    title: Executioner
+    text: |
+      +15 % damage per level against targets under 30 % health, up to +45 %. Adds up with Berserk. {url:https://wiki.raindancer118.de/enchants/executioner|wiki}
+  - question: What does Berserk do?
+    title: Berserk
+    text: |
+      The more health you are missing, the harder you hit: at half health +15 / 25 / 35 %, close to death +30 / 50 / 70 % (levels I / II / III). At full health, nothing. {url:https://wiki.raindancer118.de/enchants/berserk|wiki}
+  - question: What does Armor Pierce do?
+    title: Armor Pierce
+    text: |
+      Ignores 15 % of the target's armour per level, up to 45 %. Useless against the unarmoured, wonderful against netherite. {url:https://wiki.raindancer118.de/enchants/armor-pierce|wiki}
+  - question: What does Lifesteal do?
+    title: Lifesteal
+    text: |
+      Heals you for 6 / 10 / 14 % of the damage a melee hit really did (after armour), at most 3 hearts per hit. Against players you heal half as much. {url:https://wiki.raindancer118.de/enchants/lifesteal|wiki}
+  - question: What does Bleed do?
+    title: Bleed
+    text: |
+      Each hit adds a stack of bleeding, each a quarter heart per second, through armour. Up to 2 / 4 / 6 stacks by level. It stops 4 seconds after your last hit. Against players each stack does half. {url:https://wiki.raindancer118.de/enchants/bleed|wiki}
+  - question: What does Venom do?
+    title: Venom
+    text: |
+      Poisons on every hit: I Poison I for 4 s, II Poison II for 4 s, III Poison II for 5 s <b>and</b> Wither for 3 s (poison alone cannot kill, Wither can). Against players everything lasts half as long. {url:https://wiki.raindancer118.de/enchants/venom|wiki}
+  - question: What does Cleave do?
+    title: Cleave
+    text: |
+      Axes only. Enemies within 2.5 blocks of your target get hit too, nearest first: 2 / 3 / 4 extra targets for 30 / 45 / 60 % of your damage. Only monsters and players you may fight — never pets, villagers or animals. {url:https://wiki.raindancer118.de/enchants/cleave|wiki}
+  - question: What does Heat-seeking do?
+    title: Heat-seeking
+    text: |
+      Bows, crossbows, tridents, maces and axes: the shot locks on when it leaves your hand and steers itself, up to 5 seconds. Range 48 / 64 / 80 blocks by level, turning harder each level. It only locks onto what you can see and may hurt. Not halved against players.
+      {run:/heatseeking} switches between <b>precise</b> (what your crosshair is on, the default) and <b>wide</b> (finds something near where you aim). {url:https://wiki.raindancer118.de/enchants/heat-seeking|wiki}
+  - question: What does Volley do?
+    title: Volley
+    text: |
+      Throwing a trident fans out 2 (level I) or 4 (level II) extra ones with the same enchantments. They cannot be picked up and vanish after landing; nothing is duplicated. On an axe or mace it only works with Thor. No volley on riptide. {url:https://wiki.raindancer118.de/enchants/volley|wiki}
+  - question: What does Thor do?
+    title: Thor
+    text: |
+      <b>Legendary.</b> Axe or mace: right-click to throw it like Mjölnir — lightning where it hits, and it comes back. Damage 4 / 5 / 20 hearts, throw again after 2.75 / 2 / 1.25 s. Your real weapon never leaves your inventory.
+      Trident: where it lands a storm of 3 / 5 / 7 bolts comes down (radius 3 / 4 / 5), never on you. The lightning is show only — no fire. Not halved against players. {url:https://wiki.raindancer118.de/enchants/thor|wiki}

@@ -1,0 +1,57 @@
+id: enchants-armour
+title: Armour and movement
+summary: "Night Vision, Swiftness, Double Jump, Flight, Undying, Fusion and the elytra enchantments Boost, Launch and Autopilot."
+intro: |
+  Hop, soar, survive. Gravity is merely a suggestion if you wear the right things.
+icon: ELYTRA
+category: Items & enchantments
+order: 23
+module: enchants
+aliases: [autopilot, flight, fly, doublejump, boost, launch, undying, fusion, swiftness, nightvision, elytra]
+keywords: [totem, glide, rocket, jump, speed, armour, chestplate, boots, helmet, leggings]
+commands: [autopilot]
+related: [enchants, enchants-gear]
+wiki: https://wiki.raindancer118.de/enchants
+sections:
+  - question: What does Night Vision do?
+    title: Night Vision
+    text: |
+      Wear the helmet (a turtle shell works too) and you see in the dark, no particles, no icon. Potion night vision is never touched. A boon in the {topic:shard-world}. {url:https://wiki.raindancer118.de/enchants/night-vision|wiki}
+  - question: What does Swiftness do?
+    title: Swiftness
+    text: |
+      Leggings: Speed I at level I, Speed II at level II while worn. Potion and beacon speed stay untouched. {url:https://wiki.raindancer118.de/enchants/swiftness|wiki}
+  - question: How does Double Jump work?
+    title: Double Jump
+    text: |
+      Boots. Jump, then press jump again in the air: one extra jump per level (up to three), each a bit forward where you look. Power is {setting:enchants:double-jump-power-percent|percent} — 100 % is a little over two blocks. Your jumps return when you stand, swim or ride. A double jump resets your fall, so it can save you from fall damage. With Flight charge left, a double press starts flying instead. {url:https://wiki.raindancer118.de/enchants/double-jump|wiki}
+  - question: How does Flight work?
+    title: Flight
+    text: |
+      A chestplate that lets you fly like in creative — but each level holds {setting:enchants:flight-seconds-per-level|seconds} (level V is five times that). Press jump twice to take off; the time left shows above your hotbar and turns red in the last 5 seconds.
+      Standing on the ground, in water or a boat refills it: an empty tank takes {setting:enchants:flight-recharge-seconds|seconds}, whatever the level. Flying or hanging in the air does not refill; logging out does not either — the charge even follows you to other servers.
+      {if:enchants:landing-grace-seconds > 0}When it runs out, or you take the chestplate off in mid-air, you get {setting:enchants:landing-grace-seconds|seconds} of Slow Falling to float down.{else}Running dry in mid-air gives no soft landing — land in time.{/if} Not together with an elytra. {url:https://wiki.raindancer118.de/enchants/flight|wiki}
+  - question: How does Undying work?
+    title: Undying
+    text: |
+      A chestplate that keeps totems for you: 2, 4 or 8 by level. Click totems from your cursor onto it; the tooltip shows "Totems kept". If you would die without a totem in hand, one from the chestplate saves you. A totem in your hand is used first. Totems put in do not come back out. {url:https://wiki.raindancer118.de/enchants/undying|wiki}
+  - question: What is Fusion?
+    title: Fusion
+    text: |
+      Put two chestplates of the <b>same material</b>, both with Fusion, into an anvil: the one in the <b>first</b> slot gets twice the armour and toughness; the second is used up. Three fusions at most (×2, ×4, ×8); each costs 10 levels. Against players the fused armour only counts half. The game caps armour at 30 and toughness at 20, so there is a point where more fusing changes nothing. {url:https://wiki.raindancer118.de/enchants/fusion|wiki}
+  - question: How does Boost work?
+    title: Boost
+    text: |
+      An elytra with Boost has one charge per level. While gliding, <b>click into the air</b> and you shoot forward at {setting:enchants:boost-speed-percent|percent} of a firework rocket for 1.5 seconds, wherever you look. Holding a rocket? Right-click fires it as usual; left-click still boosts.
+      Each spent charge comes back after {setting:enchants:boost-recharge-seconds|seconds}, one at a time, even while you walk around or are offline. The bar above the hotbar says when the next is ready. {url:https://wiki.raindancer118.de/enchants/boost|wiki}
+  - question: How does Launch work?
+    title: Launch
+    text: |
+      On the ground in an elytra: <b>sneak and jump</b> and you are shot up and flung forward at {setting:enchants:launch-speed|number} metres per second, looking where you want to go. Level I waits {setting:enchants:launch-cooldown-seconds|seconds} between launches, II two thirds of that, III none. For 12 seconds afterwards you take no fall or wall-crash damage.
+      The cooldown is yours, not the elytra's. Staff can switch Launch off, and on a fresh server it starts <b>off</b>. {url:https://wiki.raindancer118.de/enchants/launch|wiki}
+  - question: How does Autopilot work?
+    title: Autopilot
+    text: |
+      Wear an Autopilot elytra and type {run:/autopilot}. A menu lists places in this world that are shared or yours (nearest first), then the players in this world. Pick a place and off you go; pick a player and they are asked first.
+      You become a spectator while a copy of you flies there; <b>A and D</b> switch the camera (orbit, chase, side, front, overhead, first person). Cooldown after landing: level I {setting:enchants:autopilot-cooldown-seconds|seconds}, II half of that, III none.
+      It refuses if you wear no Autopilot elytra, if a player hit you in the last 15 seconds, while cooling down, or where you may not land (a claim you are banned from). Log out mid-flight and you are back where you started. {url:https://wiki.raindancer118.de/enchants/autopilot|wiki}
