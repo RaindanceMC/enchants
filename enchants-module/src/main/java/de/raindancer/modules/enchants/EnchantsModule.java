@@ -54,7 +54,7 @@ public final class EnchantsModule implements FlexModule {
     /** Chest Link drops are gathered this many ticks before they are sent. */
     private static final int LINK_EVERY = 20;
 
-    private static final ModuleInfo INFO = ModuleInfo.of("enchants", "Enchants", "0.35.0")
+    private static final ModuleInfo INFO = ModuleInfo.of("enchants", "Enchants", "0.36.0")
             .describedAs("Thirty real enchantments, their shards and the shard world, with advancements")
             .by("Raindancer118");
 
@@ -149,11 +149,11 @@ public final class EnchantsModule implements FlexModule {
                 new ShardDropService(shardWorlds, settings::current, advancements, context.core().messages()),
                 shardMobs));
         de.raindancer.modules.enchants.service.AutopilotService autopilot = new de.raindancer.modules.enchants.service.AutopilotService(
-                context.plugin(), context.core().messages(), settings::current, advancements);
+                context.plugin(), context.core().messages(), settings::current, advancements, elytra);
         this.autopilot = autopilot;
         context.listener(new de.raindancer.modules.enchants.listener.AutopilotListener(autopilot));
         EnchantsCommands.ready(new EnchantsServices(context.plugin().getServer(), context.core().messages(), shardMobs,
-                autopilot, context.chat().brand(), context.core().places()));
+                autopilot));
 
         int[] beat = {0};
         java.util.random.RandomGenerator hazeDice = new java.util.SplittableRandom();
@@ -167,6 +167,7 @@ public final class EnchantsModule implements FlexModule {
                 Scheduling.entity(context.plugin(), player, () -> {
                     air.tick(player);
                     elytra.tick(player);
+                    autopilot.tick(player);
                     if (checkNightVision) {
                         wornEffects.sync(player);
                     }

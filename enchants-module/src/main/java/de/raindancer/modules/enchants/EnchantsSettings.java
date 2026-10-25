@@ -121,10 +121,12 @@ public record EnchantsSettings(
         @Key("crystal-warden-per-mille")
         int crystalWardenPerMille,
 
-        @In("enchants") @Title("Autopilot cooldown, seconds") @Range(min = 0, max = 3600)
-        @Describe("How long after landing an Autopilot I elytra can fly again; Autopilot II waits half as long, Autopilot III not at all.")
-        @Key("autopilot-cooldown-seconds")
-        int autopilotCooldownSeconds,
+        @In("enchants") @Title("Autopilot III top speed, percent of a rocket") @Range(min = 100, max = 400)
+        @Describe("How fast Autopilot keeps an elytra going at level III: 100 is a firework rocket's top speed "
+                + "(about 33 blocks a second), 200 twice that. Levels I and II get a third and two thirds of the extra. "
+                + "Far above 300 the land ahead may not load in time.")
+        @Key("autopilot-top-speed-percent")
+        int autopilotTopSpeedPercent,
 
         @In("enchants") @Title("Reinforced, wear saved per level, percent") @Range(min = 1, max = 30)
         @Describe("How likely each point of wear is skipped per level of Reinforced, on top of Unbreaking: 25 has "
@@ -141,6 +143,6 @@ public record EnchantsSettings(
         java.util.List<String> switchedOff) {
 
     public static final EnchantsSettings DEFAULTS = new EnchantsSettings(30, 30, 8, 100, 90, 150, 200, 600, 50,
-            true, "shardlands", 2500, 140, Material.AMETHYST_SHARD, 100, 70, 12, 2, 60, 25,
+            true, "shardlands", 2500, 140, Material.AMETHYST_SHARD, 100, 70, 12, 2, 200, 25,
             java.util.List.of(de.raindancer.core.content.enchant.RainsEnchants.LAUNCH));
 }

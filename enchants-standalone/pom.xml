@@ -59,7 +59,8 @@
         <!-- 0.34.3: Mjölnir's grip stays in the hand at the flatter angle (shifted so the grip lands where the mace's does). -->
         <!-- 0.34.4: Flight is a lease on Core's flight — taking the chestplate off inside a flying claim or under /fly leaves that flight on; flying on flight something else lends costs no charge and a double tap there is no jump. -->
         <!-- 0.35.0: /help guide — the enchantments, the shard world, tools, armour and movement, weapons, Soulbound and Reinforced, staff tools (RainsCore 2.4). -->
-        <plugin.version>0.35.0</plugin.version>
+        <!-- 0.36.0: Autopilot is a flight assist, in first person — /autopilot (or sneak, or landing) on and off; it takes off for you, holds the cruise speed you scroll to (up to autopilot-top-speed-percent of a rocket at III) on Boost charges and then rockets from anywhere in the inventory, and holds the altitude you level off at while you steer; F switches economy mode (least fuel first). No more spectator, mannequin, cameras or cooldown. Advancements: Cruise Control, Hypermiler, Need for Speed, Long Haul, Rocket Man. -->
+        <plugin.version>0.36.0</plugin.version>
     </properties>
 
     <dependencies>

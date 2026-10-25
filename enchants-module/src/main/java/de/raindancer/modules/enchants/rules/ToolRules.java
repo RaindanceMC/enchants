@@ -25,7 +25,31 @@ public final class ToolRules {
             Material.BEETROOTS, Material.BEETROOT_SEEDS,
             Material.NETHER_WART, Material.NETHER_WART);
 
+    /** What does something of its own on a right click in the air, besides whatever is eaten or drunk. */
+    private static final java.util.Set<Material> USED_IN_THE_AIR = java.util.EnumSet.of(Material.BOW,
+            Material.CROSSBOW, Material.TRIDENT, Material.SHIELD, Material.SPYGLASS, Material.FIREWORK_ROCKET,
+            Material.ENDER_PEARL, Material.ENDER_EYE, Material.SNOWBALL, Material.EGG, Material.BLUE_EGG,
+            Material.BROWN_EGG, Material.WIND_CHARGE, Material.FIRE_CHARGE, Material.FISHING_ROD,
+            Material.CARROT_ON_A_STICK, Material.WARPED_FUNGUS_ON_A_STICK, Material.SPLASH_POTION,
+            Material.LINGERING_POTION, Material.EXPERIENCE_BOTTLE, Material.GOAT_HORN, Material.BUNDLE,
+            Material.BUCKET, Material.WATER_BUCKET, Material.LAVA_BUCKET, Material.POWDER_SNOW_BUCKET,
+            Material.GLASS_BOTTLE, Material.BRUSH, Material.WRITABLE_BOOK, Material.WRITTEN_BOOK, Material.MAP,
+            Material.KNOWLEDGE_BOOK, Material.LEAD, Material.FLINT_AND_STEEL, Material.MACE);
+
     private ToolRules() {
+    }
+
+    /**
+     * Whether a right click in the air is left to Boost: not while either hand holds something used by right-clicking
+     * — food or a potion ({@code consumable}), a bow, a pearl — which the click is meant for.
+     */
+    public static boolean rightClickBoosts(Material main, boolean mainConsumable, Material off, boolean offConsumable) {
+        return !usedInTheAir(main, mainConsumable) && !usedInTheAir(off, offConsumable);
+    }
+
+    private static boolean usedInTheAir(Material type, boolean consumable) {
+        return type != null && (consumable || USED_IN_THE_AIR.contains(type) || type.name().endsWith("_BUNDLE")
+                || type.name().endsWith("_SPEAR"));
     }
 
     /** The eight neighbours of the mined block in the face the player looks at, as x, y, z offsets. */

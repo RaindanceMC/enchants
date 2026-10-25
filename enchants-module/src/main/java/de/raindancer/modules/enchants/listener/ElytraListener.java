@@ -11,12 +11,14 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
+import de.raindancer.modules.enchants.rules.ToolRules;
 
 import java.util.UUID;
 
 /**
  * Boost and Launch. A right click in the air only reaches the server with something in hand, so a left
- * click boosts too; a firework rocket in hand is left to do its own job.
+ * click boosts too; a right click meant for what a hand holds — eating, drinking, a rocket, a bow — is left to it.
  */
 public final class ElytraListener implements IEnchantsListener {
 
@@ -32,11 +34,24 @@ public final class ElytraListener implements IEnchantsListener {
                 || (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.LEFT_CLICK_AIR)) {
             return;
         }
-        if (event.getAction() == Action.RIGHT_CLICK_AIR && event.getItem() != null
-                && event.getItem().getType() == Material.FIREWORK_ROCKET) {
-            return;
+        if (event.getAction() == Action.RIGHT_CLICK_AIR) {
+            org.bukkit.inventory.PlayerInventory hands = event.getPlayer().getInventory();
+            ItemStack main = hands.getItemInMainHand();
+            ItemStack off = hands.getItemInOffHand();
+            if (!ToolRules.rightClickBoosts(type(main), consumable(main), type(off), consumable(off))) {
+                return;
+            }
         }
         elytra.click(event.getPlayer());
+    }
+
+    private static Material type(ItemStack item) {
+        return item == null || item.getType().isAir() ? null : item.getType();
+    }
+
+    private static boolean consumable(ItemStack item) {
+        return item != null && !item.getType().isAir()
+                && item.hasData(io.papermc.paper.datacomponent.DataComponentTypes.CONSUMABLE);
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)

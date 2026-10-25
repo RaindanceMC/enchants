@@ -24,7 +24,7 @@ public final class EnchantsCommands {
                         new de.raindancer.modules.enchants.command.GiveCommand(EnchantsCommands::require))
                         .taking("<player> <item> [count] — also telekinesis_shard, flight_book, flight_book_3")
                         .needing(de.raindancer.modules.enchants.command.GiveCommand.PERMISSION),
-                ModuleCommand.of("autopilot", "Wearing an Autopilot elytra: pick a place or a player and watch yourself fly there",
+                ModuleCommand.of("autopilot", "Wearing an Autopilot elytra: flight assist on or off; economy for economy mode, speed <n> for the cruise speed",
                         new de.raindancer.modules.enchants.command.AutopilotCommand(EnchantsCommands::require)),
                 ModuleCommand.of("heatseeking", "Switches your Heat-seeking between precise (what the crosshair is on) and wide",
                         new de.raindancer.modules.enchants.command.HeatSeekingCommand(EnchantsCommands::require)));

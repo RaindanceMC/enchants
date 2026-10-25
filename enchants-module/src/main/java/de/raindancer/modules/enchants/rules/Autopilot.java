@@ -1,131 +1,130 @@
 package de.raindancer.modules.enchants.rules;
 
+import java.util.Comparator;
+import java.util.List;
+import java.util.OptionalInt;
 
 /**
- * Autopilot's flight: straight up like a launch, across high above the land, and a steep dive onto the place, one
- * point a tick. Never faster than {@link #DIVE_SPEED} blocks a tick, so the land ahead can load in time.
+ * Autopilot's flight assist, in blocks a tick. The player steers all the time; Autopilot holds the cruise speed they
+ * picked — burning rockets and Boost charges for it, past a rocket's own top speed — and, while they fly level, the
+ * altitude they levelled off at. In economy mode it spends as little fuel as it can and gets to the cruise speed
+ * second: no thrust in a dive, gentler thrust, a little slower before it lights up again, no braking.
  */
 public final class Autopilot {
 
-    public enum Phase { LAUNCH, CRUISE, DIVE }
+    /** A firework rocket's top speed on an elytra. */
+    public static final double ROCKET_TOP = 1.5;
+    /** The slowest cruise speed one can pick, in blocks a second. */
+    public static final double SLOWEST = 10;
+    /** One notch of the scroll wheel, in blocks a second. */
+    public static final double NOTCH = 2;
+    /** Looking no further up or down than this counts as flying level: the altitude is held. */
+    public static final double LEVEL_PITCH = 12;
+    /** In economy mode the next thrust waits until the speed has sagged to this share of the cruise speed. */
+    static final double ECONOMY_SAG = 0.9;
+    /** Sinking faster than this is a dive: in economy mode, free speed. */
+    static final double DIVING = -0.1;
+    private static final double CLIMB_TO_HOLD = 0.4;
 
-    /** The cinematic cameras, switched in flight. */
-    public enum Camera {
-        ORBIT("Orbit"), CHASE("Chase"), SIDE("Side"), FRONT("Front"), OVERHEAD("Overhead"), FIRST_PERSON("First person");
-
-        private final String title;
-
-        Camera(String title) {
-            this.title = title;
-        }
-
-        public String title() {
-            return title;
-        }
-
-        public Camera next() {
-            return values()[(ordinal() + 1) % values().length];
-        }
-
-        public Camera previous() {
-            return values()[(ordinal() + values().length - 1) % values().length];
-        }
+    /** A rocket somewhere in the inventory: its slot, its flight duration, whether it carries stars. */
+    public record Rocket(int slot, int power, boolean explosive) {
     }
 
-    /** Where the flier is in a tick, and which way it faces (the game's yaw and pitch). */
-    public record Point(double x, double y, double z, float yaw, float pitch, Phase phase) {
+    /**
+     * One tick's outcome.
+     *
+     * @param velocity what to set, or null to leave the player's own glide alone
+     * @param thrusting whether it burnt fuel this tick
+     * @param holdY the altitude held from now on, or null while the player climbs or dives
+     */
+    public record Tick(double[] velocity, boolean thrusting, Double holdY) {
     }
-
-    public static final double ORBIT_RADIUS = 7;
-    /** Degrees the orbit camera goes round each tick: once round in six seconds. */
-    public static final double ORBIT_STEP = 3;
-    private static final double CAMERA_BACK = 8;
-    private static final double CAMERA_UP = 3;
 
     private Autopilot() {
     }
 
-    /** Seconds before the elytra flies again: the server's setting at I, half at II, none at III. */
-    public static int cooldownSeconds(int level, int setting) {
-        return switch (Math.clamp(level, 1, 3)) {
-            case 1 -> setting;
-            case 2 -> setting / 2;
-            default -> 0;
-        };
+    /** The top speed at {@code level}: a rocket's, plus a third of the setting's extra per level. */
+    public static double topSpeed(int level, int percentAtThree) {
+        double extra = Math.max(0, percentAtThree - 100) * Math.clamp(level, 1, 3) / 3.0;
+        return ROCKET_TOP * (100 + extra) / 100.0;
     }
 
-    /** The orbit camera's tilt while it circles by itself, and how far the mouse may tilt it. */
-    public static final double ORBIT_PITCH = 15;
-    public static final double ORBIT_HIGHEST = 80;
-    public static final double ORBIT_LOWEST = -40;
+    /** The cruise speed one asked for, in blocks a second, as blocks a tick between {@link #SLOWEST} and the top. */
+    public static double cruise(double perSecond, double top) {
+        return Math.clamp(perSecond / 20.0, Math.min(SLOWEST / 20.0, top), top);
+    }
 
-    /** A pitch the orbit camera may take. */
-    public static double orbitPitch(double pitch) {
-        return Math.clamp(pitch, ORBIT_LOWEST, ORBIT_HIGHEST);
+    /** Scrolled from one hotbar slot to another: notches up (faster) are positive. Scrolling up selects the slot left. */
+    public static int notches(int from, int to) {
+        int moved = Math.floorMod(to - from + 4, 9) - 4;
+        return -moved;
+    }
+
+    /** One tick of thrust along {@code direction} (a unit vector): {@code gain} of the way to {@code speed}, never past. */
+    public static double[] thrust(double[] velocity, double[] direction, double speed, double gain) {
+        double[] next = new double[3];
+        for (int i = 0; i < 3; i++) {
+            next[i] = velocity[i] + (direction[i] * speed - velocity[i]) * gain;
+        }
+        return next;
     }
 
     /**
-     * The orbit camera looking along {@code yaw} and {@code pitch} (the game's) at the flier, from
-     * {@link #ORBIT_RADIUS} away — as a third-person camera does, so the mouse can turn it.
+     * One tick of the assist.
+     *
+     * @param velocity how the player moved last tick
+     * @param look where they look (a unit vector), and {@code pitch} the game's pitch, positive down
+     * @param holdY the altitude held so far, or null
+     * @param fuel whether a rocket or a charge burns, or one could be lit
      */
-    public static Point orbit(Point flier, double yaw, double pitch) {
-        double yawRad = Math.toRadians(yaw);
-        double pitchRad = Math.toRadians(pitch);
-        double lookX = -Math.sin(yawRad) * Math.cos(pitchRad);
-        double lookY = -Math.sin(pitchRad);
-        double lookZ = Math.cos(yawRad) * Math.cos(pitchRad);
-        return new Point(flier.x() - lookX * ORBIT_RADIUS, flier.y() + 1 - lookY * ORBIT_RADIUS,
-                flier.z() - lookZ * ORBIT_RADIUS, (float) yaw, (float) pitch, flier.phase());
+    public static Tick fly(double[] velocity, double[] look, double pitch, double y, Double holdY, double cruise,
+                           boolean economy, boolean fuel) {
+        boolean level = Math.abs(pitch) <= LEVEL_PITCH;
+        Double hold = level ? (holdY == null ? Double.valueOf(y) : holdY) : null;
+        double[] direction = look.clone();
+        if (level) {
+            double across = Math.hypot(look[0], look[2]);
+            direction = across < 1e-9 ? new double[]{0, 0, 0} : new double[]{look[0] / across, 0, look[2] / across};
+        }
+        double speed = Math.sqrt(velocity[0] * velocity[0] + velocity[1] * velocity[1] + velocity[2] * velocity[2]);
+        boolean wants = economy
+                ? speed < cruise * ECONOMY_SAG && (level || velocity[1] > DIVING)
+                : speed < cruise - 0.025;
+        boolean thrusting = wants && fuel;
+        double[] next = null;
+        if (thrusting) {
+            next = thrust(velocity, direction, cruise, economy ? 0.25 : 0.5);
+        } else if (!economy && speed > cruise * 1.05) {
+            // Cruise speed comes first: air brakes rather than racing past it in a dive.
+            double scale = cruise / speed;
+            next = new double[]{velocity[0] * scale, velocity[1] * scale, velocity[2] * scale};
+        }
+        if (hold != null) {
+            if (next == null) {
+                next = velocity.clone();
+            }
+            next[1] = Math.clamp((hold - y) * 0.25, -CLIMB_TO_HOLD, CLIMB_TO_HOLD);
+        }
+        return new Tick(next, thrusting, hold);
     }
 
-    /** The chase camera: behind the flier along {@code heading} (x z), above it, looking at it. */
-    public static Point camera(Point flier, double[] heading) {
-        return camera(flier, heading, Camera.CHASE).orElseThrow();
+    /** How long a rocket of this flight duration burns: a launched one's average lifetime. */
+    public static int burnTicks(int power) {
+        return 10 * (Math.max(0, power) + 1) + 6;
     }
 
     /**
-     * Where a camera hangs for the flier, looking at it; empty for the first-person one, which looks through the
-     * flier's own eyes.
+     * The rocket to burn next: a plain one first, one with stars only when nothing else is left. In economy mode the
+     * one that burns longest for its gunpowder (the shortest), otherwise the longest-burning.
      */
-    public static java.util.Optional<Point> camera(Point flier, double[] heading, Camera camera) {
-        return camera(flier, heading, camera, 0);
+    public static OptionalInt pick(List<Rocket> carried, boolean economy) {
+        Comparator<Rocket> power = Comparator.comparing(Rocket::power);
+        return carried.stream()
+                .min(Comparator.comparing(Rocket::explosive).thenComparing(economy ? power : power.reversed()))
+                .map(rocket -> OptionalInt.of(rocket.slot())).orElse(OptionalInt.empty());
     }
 
-    /** The same, {@code tick} ticks into the flight — which only the orbit camera, going round, minds. */
-    public static java.util.Optional<Point> camera(Point flier, double[] heading, Camera camera, int tick) {
-        if (camera == Camera.ORBIT) {
-            return java.util.Optional.of(orbit(flier, tick * ORBIT_STEP, ORBIT_PITCH));
-        }
-        double length = Math.sqrt(heading[0] * heading[0] + heading[1] * heading[1]);
-        double hx = length < 1e-6 ? 0 : heading[0] / length;
-        double hz = length < 1e-6 ? 1 : heading[1] / length;
-        // Ahead, to the side (the flier's right hand when facing the heading), and up.
-        double[] offset = switch (camera) {
-            case CHASE -> new double[]{-CAMERA_BACK, 0, CAMERA_UP};
-            case SIDE -> new double[]{0, 7, 1};
-            case FRONT -> new double[]{9, 0, 1.5};
-            case OVERHEAD -> new double[]{-2, 0, 18};
-            case FIRST_PERSON, ORBIT -> null;
-        };
-        if (offset == null) {
-            return java.util.Optional.empty();
-        }
-        double sx = -hz;
-        double sz = hx;
-        double x = flier.x() + hx * offset[0] + sx * offset[1];
-        double y = flier.y() + offset[2];
-        double z = flier.z() + hz * offset[0] + sz * offset[1];
-        double dx = flier.x() - x;
-        double dy = flier.y() + 1 - y;
-        double dz = flier.z() - z;
-        return java.util.Optional.of(new Point(x, y, z, yaw(dx, dz), pitch(dx, dy, dz), flier.phase()));
-    }
-
-    private static float yaw(double dx, double dz) {
-        return Math.abs(dx) < 1e-9 && Math.abs(dz) < 1e-9 ? 0 : (float) Math.toDegrees(Math.atan2(-dx, dz));
-    }
-
-    private static float pitch(double dx, double dy, double dz) {
-        return (float) Math.toDegrees(-Math.atan2(dy, Math.sqrt(dx * dx + dz * dz)));
+    public static double blocksPerSecond(double blocksPerTick) {
+        return blocksPerTick * 20;
     }
 }

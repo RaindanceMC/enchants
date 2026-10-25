@@ -103,6 +103,45 @@ public final class ElytraService {
         return true;
     }
 
+    /**
+     * A Boost charge spent by Autopilot, which does the pulling itself.
+     *
+     * @return how many ticks it pulls for; 0 if there is no Boost or no charge left
+     */
+    public int spendForAutopilot(Player player) {
+        int level = level(player, RainsEnchants.BOOST);
+        if (level < 1) {
+            return 0;
+        }
+        long now = System.currentTimeMillis();
+        BoostCharges charges = store.charges(player, level);
+        boolean taken = charges.take(now, level, settings.get().boostRechargeSeconds() * 1000L);
+        store.save(player, charges);
+        if (!taken) {
+            return 0;
+        }
+        player.getWorld().spawnParticle(Particle.SONIC_BOOM, player.getLocation(), 1);
+        advancements.used(player.getUniqueId(), RainsEnchants.BOOST);
+        return BOOST_TICKS;
+    }
+
+    /** Boost charges left on the worn elytra, and how many it holds; {0, 0} without Boost. */
+    public int[] charges(Player player) {
+        int level = level(player, RainsEnchants.BOOST);
+        if (level < 1) {
+            return new int[]{0, 0};
+        }
+        BoostCharges charges = store.charges(player, level);
+        charges.update(System.currentTimeMillis(), level, settings.get().boostRechargeSeconds() * 1000L);
+        return new int[]{charges.charges(), level};
+    }
+
+    /** Whether a clicked Boost is pulling the player right now. */
+    public boolean boosting(Player player) {
+        Flight flight = flights.get(player.getUniqueId());
+        return flight != null && flight.boostTicks > 0;
+    }
+
     /** A jump. @return true if it set off a launch */
     public boolean jump(Player player) {
         int level = level(player, RainsEnchants.LAUNCH);

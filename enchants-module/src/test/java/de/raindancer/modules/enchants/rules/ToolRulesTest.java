@@ -77,4 +77,20 @@ class ToolRulesTest {
         }
         assertThat(cruising[2]).as("settles above a rocket's 1.5").isBetween(2.3, 2.6);
     }
+
+    @Test
+    @DisplayName("a right click boosts only when neither hand holds something that is used by right-clicking")
+    void rightClickBoost() {
+        assertThat(ToolRules.rightClickBoosts(Material.DIRT, false, null, false)).isTrue();
+        assertThat(ToolRules.rightClickBoosts(Material.COOKED_BEEF, true, null, false)).as("eating").isFalse();
+        assertThat(ToolRules.rightClickBoosts(Material.DIRT, false, Material.BREAD, true)).as("eating from the off hand")
+                .isFalse();
+        for (Material used : new Material[]{Material.BOW, Material.CROSSBOW, Material.TRIDENT, Material.SHIELD,
+                Material.SPYGLASS, Material.FIREWORK_ROCKET, Material.ENDER_PEARL, Material.WIND_CHARGE,
+                Material.FISHING_ROD, Material.SPLASH_POTION, Material.GOAT_HORN, Material.BRUSH}) {
+            assertThat(ToolRules.rightClickBoosts(used, false, null, false)).as(used.name()).isFalse();
+            assertThat(ToolRules.rightClickBoosts(Material.STONE, false, used, false)).as("off hand " + used.name())
+                    .isFalse();
+        }
+    }
 }

@@ -52,6 +52,5 @@ sections:
   - question: How does Autopilot work?
     title: Autopilot
     text: |
-      Wear an Autopilot elytra and type {run:/autopilot}. A menu lists places in this world that are shared or yours (nearest first), then the players in this world. Pick a place and off you go; pick a player and they are asked first.
-      You become a spectator while a copy of you flies there; <b>A and D</b> switch the camera (orbit, chase, side, front, overhead, first person). Cooldown after landing: level I {setting:enchants:autopilot-cooldown-seconds|seconds}, II half of that, III none.
-      It refuses if you wear no Autopilot elytra, if a player hit you in the last 15 seconds, while cooling down, or where you may not land (a claim you are banned from). Log out mid-flight and you are back where you started. {url:https://wiki.raindancer118.de/enchants/autopilot|wiki}
+      Wear an Autopilot elytra and type {run:/autopilot} — on the ground it takes off for you, in the air it opens the elytra. It keeps you flying at your cruise speed, burning Boost charges first and then firework rockets from <b>anywhere in your inventory</b>, faster than a rocket alone: at level III up to {setting:enchants:autopilot-top-speed-percent|percent} of a rocket's top speed, I and II a third and two thirds of the extra.
+      You steer all the time. Look up or down to climb or dive; fly level and it holds the altitude you levelled off at. <b>Scroll</b> to change the cruise speed, <b>F</b> switches economy mode (as little fuel as it can, speed second), <b>sneak</b> or {run:/autopilot} again switches it off, and landing does too. {url:https://wiki.raindancer118.de/enchants/autopilot|wiki}

@@ -27,6 +27,11 @@ public final class EnchantAdvancements {
     private static final int TUNNEL_STEP = 50;
     private static final int TUNNEL_STEPS = 10;
     private static final int LAUNCH_BLOCKS = 1000;
+    private static final double AUTOPILOT_SPEED = 50;
+    private static final double AUTOPILOT_HAUL = 5000;
+    private static final int AUTOPILOT_ROCKETS = 64;
+    private static final double ECONOMY_BLOCKS = 1000;
+    private static final int ECONOMY_FUEL = 2;
 
     /** Every enchantment's first-use advancement has the enchantment's own key. */
     private static final List<String> FIRST_USE = EnchantsDefinitions.all().stream().map(EnchantDef::key).toList();
@@ -128,8 +133,18 @@ public final class EnchantAdvancements {
                 "Have Reinforced gear shrug off some wear", AdvancementFrame.TASK, 1);
         child("xp_siphon", "root", Material.EXPERIENCE_BOTTLE, "Straight to the Head",
                 "Have experience flow straight into you with XP Siphon", AdvancementFrame.TASK, 1);
-        child("autopilot", "root", Material.ELYTRA, "Sit Back and Relax",
-                "Let Autopilot fly you somewhere", AdvancementFrame.TASK, 1);
+        child("autopilot", "root", Material.ELYTRA, "Cruise Control",
+                "Switch on Autopilot and let it keep you flying", AdvancementFrame.TASK, 1);
+        child("hypermiler", "autopilot", Material.PAPER, "Hypermiler",
+                "Fly " + (int) ECONOMY_BLOCKS + " blocks in Autopilot's economy mode on no more than "
+                        + ECONOMY_FUEL + " rockets or charges", AdvancementFrame.GOAL, 1);
+        child("need_for_speed", "autopilot", Material.FIREWORK_ROCKET, "Need for Speed",
+                "Fly " + (int) AUTOPILOT_SPEED + " blocks a second on Autopilot", AdvancementFrame.CHALLENGE, 1);
+        child("long_haul", "autopilot", Material.FILLED_MAP, "Long Haul",
+                "Fly " + (int) AUTOPILOT_HAUL + " blocks on Autopilot without switching it off",
+                AdvancementFrame.GOAL, 1);
+        child("rocket_man", "autopilot", Material.GUNPOWDER, "Rocket Man",
+                "Have Autopilot burn " + AUTOPILOT_ROCKETS + " rockets", AdvancementFrame.GOAL, AUTOPILOT_ROCKETS);
         child("shardlands", "root", Material.CRYING_OBSIDIAN, "Into the Dark",
                 "Step through a portal into the shard world", AdvancementFrame.TASK, 1);
         child("first_shard", "shardlands", Material.ECHO_SHARD, "Shard Hunter",
@@ -219,6 +234,34 @@ public final class EnchantAdvancements {
     public void launchCarried(UUID player, double blocks) {
         if (blocks >= LAUNCH_BLOCKS) {
             advancements.award(player, "rainsenchants:ludicrous_speed");
+        }
+    }
+
+    /** Flown {@code blocks} in economy mode, without switching it or Autopilot off, on {@code fuel} rockets and charges. */
+    public void autopilotEconomy(UUID player, double blocks, int fuel) {
+        if (blocks >= ECONOMY_BLOCKS && fuel <= ECONOMY_FUEL) {
+            advancements.award(player, "rainsenchants:hypermiler");
+        }
+    }
+
+    /** How fast, in blocks a second, Autopilot is flying the player now. */
+    public void autopilotSpeed(UUID player, double blocksPerSecond) {
+        if (blocksPerSecond >= AUTOPILOT_SPEED) {
+            advancements.award(player, "rainsenchants:need_for_speed");
+        }
+    }
+
+    /** How far, in blocks, the player has flown since switching Autopilot on. */
+    public void autopilotDistance(UUID player, double blocks) {
+        if (blocks >= AUTOPILOT_HAUL) {
+            advancements.award(player, "rainsenchants:long_haul");
+        }
+    }
+
+    public void autopilotRocket(UUID player) {
+        int done = advancements.stepsDone(player, "rainsenchants:rocket_man");
+        if (done < AUTOPILOT_ROCKETS) {
+            advancements.progress(player, "rainsenchants:rocket_man", done + 1);
         }
     }
 

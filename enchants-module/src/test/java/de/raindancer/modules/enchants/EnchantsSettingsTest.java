@@ -29,7 +29,7 @@ class EnchantsSettingsTest {
         assertThat(defaults.portalKey()).isEqualTo(org.bukkit.Material.AMETHYST_SHARD);
         assertThat(defaults.shardDropPercent()).isEqualTo(100);
         assertThat(defaults.crystalWardenPerMille()).isEqualTo(2);
-        assertThat(defaults.autopilotCooldownSeconds()).isEqualTo(60);
+        assertThat(defaults.autopilotTopSpeedPercent()).isEqualTo(200);
         assertThat(defaults.reinforcedPercentPerLevel()).isEqualTo(25);
     }
 

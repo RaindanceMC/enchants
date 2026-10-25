@@ -60,7 +60,8 @@ class EnchantAdvancementsTest {
                 "frequent_flyer", "double_jump", "triple_jump", "full_set", "auto_sell", "boost", "burnout",
                 "launch", "ludicrous_speed", "swiftness", "haste", "soulbound", "wisdom", "excavator", "tunnel_vision",
                 "harvester", "bumper_crop", "smelting", "telekinesis", "chest_link", "shardlands", "first_shard",
-                "reinforced", "xp_siphon"}) {
+                "reinforced", "xp_siphon", "autopilot", "hypermiler", "need_for_speed",
+                "long_haul", "rocket_man"}) {
             assertThat(advancements.isLoaded("rainsenchants:" + id)).as(id).isTrue();
         }
     }
@@ -196,5 +197,33 @@ class EnchantAdvancementsTest {
         } finally {
             de.raindancer.core.content.enchant.CustomEnchantments.switchOff(List.of());
         }
+    }
+
+    @Test
+    @DisplayName("Autopilot: frugal economy flying, a top speed, a long haul in one flight and rockets burnt over time")
+    void autopilot() {
+        enchants.autopilotEconomy(ALICE, 999, 1);
+        assertThat(advancements.has(ALICE, "rainsenchants:hypermiler")).isFalse();
+        enchants.autopilotEconomy(ALICE, 1000, 3);
+        assertThat(advancements.has(ALICE, "rainsenchants:hypermiler")).as("too thirsty").isFalse();
+        enchants.autopilotEconomy(ALICE, 1000, 2);
+        assertThat(advancements.has(ALICE, "rainsenchants:hypermiler")).isTrue();
+
+        enchants.autopilotSpeed(ALICE, 49.9);
+        assertThat(advancements.has(ALICE, "rainsenchants:need_for_speed")).isFalse();
+        enchants.autopilotSpeed(ALICE, 50);
+        assertThat(advancements.has(ALICE, "rainsenchants:need_for_speed")).isTrue();
+
+        enchants.autopilotDistance(ALICE, 4999);
+        assertThat(advancements.has(ALICE, "rainsenchants:long_haul")).isFalse();
+        enchants.autopilotDistance(ALICE, 5000);
+        assertThat(advancements.has(ALICE, "rainsenchants:long_haul")).isTrue();
+
+        for (int i = 0; i < 63; i++) {
+            enchants.autopilotRocket(ALICE);
+        }
+        assertThat(advancements.has(ALICE, "rainsenchants:rocket_man")).isFalse();
+        enchants.autopilotRocket(ALICE);
+        assertThat(advancements.has(ALICE, "rainsenchants:rocket_man")).isTrue();
     }
 }
