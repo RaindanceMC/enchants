@@ -9,7 +9,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 
-/** Autopilot's controls in flight: the scroll wheel sets the cruise speed, F economy mode, sneaking switches it off. */
+/** Autopilot's controls in flight: sneak and scroll set the cruise speed, F economy mode, a tap of sneak switches it off. */
 public final class AutopilotListener implements IEnchantsListener {
 
     private final AutopilotService autopilot;
@@ -34,9 +34,7 @@ public final class AutopilotListener implements IEnchantsListener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onSneak(PlayerToggleSneakEvent event) {
-        if (event.isSneaking()) {
-            autopilot.disengage(event.getPlayer(), "enchants.autopilot-disengaged");
-        }
+        autopilot.sneaked(event.getPlayer(), event.isSneaking());
     }
 
     @EventHandler(priority = EventPriority.LOWEST)

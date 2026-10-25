@@ -31,9 +31,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
 /**
- * Autopilot: switched on, it keeps a gliding player going at the cruise speed they picked (the scroll wheel), burning
+ * Autopilot: switched on, it keeps a gliding player going at the cruise speed they picked (sneak and scroll), burning
  * Boost charges and then rockets from anywhere in their inventory, and holds the altitude they level off at. The
- * player steers throughout; F switches economy mode, sneaking or {@code /autopilot} switches it off, and landing does
+ * player steers throughout; F switches economy mode, a tap of sneak or {@code /autopilot} switches it off, and landing does
  * too. Runs on the player's own thread, once a tick from {@link #tick}.
  */
 public final class AutopilotService {
@@ -70,6 +70,8 @@ public final class AutopilotService {
         boolean warnedEmpty;
         double speed;
         double heldFor;
+        /** Scrolled while sneak was held: letting go of sneak then is not a switch-off. */
+        boolean sneakScrolled;
         double unCounted;
     }
 
@@ -136,6 +138,8 @@ public final class AutopilotService {
                 player.setGliding(true);
             }
         }
+        // Already holding sneak when switched on: that sneak's release is no switch-off.
+        flight.sneakScrolled = player.isSneaking();
         flights.put(player.getUniqueId(), flight);
         messages.send(player, "enchants.autopilot-on", "speed", String.valueOf(Math.round(cruisePerSecond(player))),
                 "mode", modeName(player));
@@ -169,19 +173,37 @@ public final class AutopilotService {
         messages.send(player, "enchants.autopilot-cruise", "speed", String.valueOf(Math.round(cruisePerSecond(player))));
     }
 
-    /** The scroll wheel in flight. @return true if it changed the cruise speed instead of the hotbar slot */
+    /**
+     * The scroll wheel in flight, with sneak held: the cruise speed. Without sneak the hotbar scrolls as always.
+     *
+     * @return true if it changed the cruise speed instead of the hotbar slot
+     */
     public boolean scrolled(Player player, int from, int to) {
         Flight flight = flights.get(player.getUniqueId());
         int notches = Autopilot.notches(from, to);
-        if (flight == null || notches == 0) {
+        if (flight == null || notches == 0 || !player.isSneaking()) {
             return false;
         }
+        flight.sneakScrolled = true;
         double top = Autopilot.blocksPerSecond(top(player));
         double picked = Math.clamp(cruisePerSecond(player) + notches * Autopilot.NOTCH,
                 Math.min(Autopilot.SLOWEST, top), top);
         player.getPersistentDataContainer().set(CRUISE, PersistentDataType.DOUBLE, picked);
         hud(player, flight);
         return true;
+    }
+
+    /** Sneak pressed or let go in flight: a tap without scrolling switches Autopilot off. */
+    public void sneaked(Player player, boolean down) {
+        Flight flight = flights.get(player.getUniqueId());
+        if (flight == null) {
+            return;
+        }
+        if (down) {
+            flight.sneakScrolled = false;
+        } else if (!flight.sneakScrolled) {
+            disengage(player, "enchants.autopilot-disengaged");
+        }
     }
 
     /** F in flight. @return true if it switched economy mode instead of the hands */
