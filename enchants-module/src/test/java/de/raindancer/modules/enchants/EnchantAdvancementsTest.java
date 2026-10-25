@@ -61,7 +61,8 @@ class EnchantAdvancementsTest {
                 "launch", "ludicrous_speed", "swiftness", "haste", "soulbound", "wisdom", "excavator", "tunnel_vision",
                 "harvester", "bumper_crop", "smelting", "telekinesis", "chest_link", "shardlands", "first_shard",
                 "reinforced", "xp_siphon", "autopilot", "hypermiler", "need_for_speed",
-                "long_haul", "rocket_man"}) {
+                "long_haul", "rocket_man", "running_on_fumes", "star_struck", "steady_hands",
+                "around_the_world"}) {
             assertThat(advancements.isLoaded("rainsenchants:" + id)).as(id).isTrue();
         }
     }
@@ -225,5 +226,26 @@ class EnchantAdvancementsTest {
         assertThat(advancements.has(ALICE, "rainsenchants:rocket_man")).isFalse();
         enchants.autopilotRocket(ALICE);
         assertThat(advancements.has(ALICE, "rainsenchants:rocket_man")).isTrue();
+    }
+
+    @Test
+    @DisplayName("Autopilot's odder moments: running dry, a star rocket burnt, a long level stretch, and the world round in kilometres")
+    void autopilotMore() {
+        enchants.autopilotRanDry(ALICE);
+        assertThat(advancements.has(ALICE, "rainsenchants:running_on_fumes")).isTrue();
+        enchants.autopilotStarRocket(ALICE);
+        assertThat(advancements.has(ALICE, "rainsenchants:star_struck")).isTrue();
+
+        enchants.autopilotLevel(ALICE, 999);
+        assertThat(advancements.has(ALICE, "rainsenchants:steady_hands")).isFalse();
+        enchants.autopilotLevel(ALICE, 1000);
+        assertThat(advancements.has(ALICE, "rainsenchants:steady_hands")).isTrue();
+
+        for (int i = 0; i < 99; i++) {
+            enchants.autopilotKilometre(ALICE);
+        }
+        assertThat(advancements.has(ALICE, "rainsenchants:around_the_world")).isFalse();
+        enchants.autopilotKilometre(ALICE);
+        assertThat(advancements.has(ALICE, "rainsenchants:around_the_world")).isTrue();
     }
 }

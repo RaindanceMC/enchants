@@ -32,6 +32,8 @@ public final class EnchantAdvancements {
     private static final int AUTOPILOT_ROCKETS = 64;
     private static final double ECONOMY_BLOCKS = 1000;
     private static final int ECONOMY_FUEL = 2;
+    private static final double LEVEL_BLOCKS = 1000;
+    private static final int AROUND_KILOMETRES = 100;
 
     /** Every enchantment's first-use advancement has the enchantment's own key. */
     private static final List<String> FIRST_USE = EnchantsDefinitions.all().stream().map(EnchantDef::key).toList();
@@ -145,6 +147,15 @@ public final class EnchantAdvancements {
                 AdvancementFrame.GOAL, 1);
         child("rocket_man", "autopilot", Material.GUNPOWDER, "Rocket Man",
                 "Have Autopilot burn " + AUTOPILOT_ROCKETS + " rockets", AdvancementFrame.GOAL, AUTOPILOT_ROCKETS);
+        child("running_on_fumes", "autopilot", Material.CAMPFIRE, "Running on Fumes",
+                "Let Autopilot run out of rockets and Boost charges in mid-air", AdvancementFrame.TASK, 1);
+        child("star_struck", "rocket_man", Material.FIREWORK_STAR, "Star-Struck",
+                "Have Autopilot burn a rocket with stars because nothing plainer was left", AdvancementFrame.TASK, 1);
+        child("steady_hands", "autopilot", Material.COMPASS, "Steady Hands",
+                "Fly " + (int) LEVEL_BLOCKS + " blocks on Autopilot at one held altitude", AdvancementFrame.TASK, 1);
+        child("around_the_world", "long_haul", Material.MAP, "Around the World",
+                "Fly " + AROUND_KILOMETRES * 1000 + " blocks on Autopilot in total", AdvancementFrame.CHALLENGE,
+                AROUND_KILOMETRES);
         child("shardlands", "root", Material.CRYING_OBSIDIAN, "Into the Dark",
                 "Step through a portal into the shard world", AdvancementFrame.TASK, 1);
         child("first_shard", "shardlands", Material.ECHO_SHARD, "Shard Hunter",
@@ -262,6 +273,29 @@ public final class EnchantAdvancements {
         int done = advancements.stepsDone(player, "rainsenchants:rocket_man");
         if (done < AUTOPILOT_ROCKETS) {
             advancements.progress(player, "rainsenchants:rocket_man", done + 1);
+        }
+    }
+
+    public void autopilotRanDry(UUID player) {
+        advancements.award(player, "rainsenchants:running_on_fumes");
+    }
+
+    public void autopilotStarRocket(UUID player) {
+        advancements.award(player, "rainsenchants:star_struck");
+    }
+
+    /** How far Autopilot has flown the player at the altitude it holds now. */
+    public void autopilotLevel(UUID player, double blocks) {
+        if (blocks >= LEVEL_BLOCKS) {
+            advancements.award(player, "rainsenchants:steady_hands");
+        }
+    }
+
+    /** Another thousand blocks on Autopilot, over all flights. */
+    public void autopilotKilometre(UUID player) {
+        int done = advancements.stepsDone(player, "rainsenchants:around_the_world");
+        if (done < AROUND_KILOMETRES) {
+            advancements.progress(player, "rainsenchants:around_the_world", done + 1);
         }
     }
 

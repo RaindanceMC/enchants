@@ -69,6 +69,8 @@ public final class AutopilotService {
         int economyFuel;
         boolean warnedEmpty;
         double speed;
+        double heldFor;
+        double unCounted;
     }
 
     public AutopilotService(Plugin plugin, Messages messages, Supplier<EnchantsSettings> settings,
@@ -246,7 +248,17 @@ public final class AutopilotService {
         if (step.thrusting() && flight.burnLeft <= 0 && !refuel(player, flight, economy)) {
             step = Autopilot.fly(velocity, direction, here.getPitch(), here.getY(), flight.holdY, cruise, economy, false);
         }
+        if (step.holdY() != null && step.holdY().equals(flight.holdY)) {
+            flight.heldFor += speed;
+        } else {
+            flight.heldFor = 0;
+        }
         flight.holdY = step.holdY();
+        flight.unCounted += speed;
+        if (flight.unCounted >= 1000) {
+            flight.unCounted -= 1000;
+            advancements.autopilotKilometre(player.getUniqueId());
+        }
         if (step.thrusting()) {
             flight.burnLeft--;
             if (flight.tick % 2 == 0) {
@@ -260,6 +272,7 @@ public final class AutopilotService {
         advancements.autopilotSpeed(id, Autopilot.blocksPerSecond(speed));
         if (flight.tick % 20 == 0) {
             advancements.autopilotDistance(id, flight.distance);
+            advancements.autopilotLevel(id, flight.heldFor);
             if (economy) {
                 advancements.autopilotEconomy(id, flight.economyDistance, flight.economyFuel);
             }
@@ -292,10 +305,14 @@ public final class AutopilotService {
                 if (!flight.warnedEmpty) {
                     flight.warnedEmpty = true;
                     messages.send(player, "enchants.autopilot-empty");
+                    advancements.autopilotRanDry(player.getUniqueId());
                 }
                 return false;
             }
             ItemStack rocket = inventory.getItem(slot.getAsInt());
+            if (rocket.getItemMeta() instanceof FireworkMeta meta && meta.hasEffects()) {
+                advancements.autopilotStarRocket(player.getUniqueId());
+            }
             flight.burnLeft = Autopilot.burnTicks(power(rocket));
             if (player.getGameMode() != GameMode.CREATIVE) {
                 rocket.subtract();
