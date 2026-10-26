@@ -33,9 +33,9 @@ public final class WeaponLooks {
         Key current = stack.getData(DataComponentTypes.ITEM_MODEL);
         if (look.isPresent()) {
             Key model = Key.key(look.get().model());
-            // Another plugin's own model on this item wins.
-            if (current != null && !current.equals(model) && !current.namespace().equals("rainsenchants")
-                    && !current.equals(stack.getType().getKey())) {
+            // Another plugin's own model on this item wins; a cosmetic skin does not.
+            if (current != null && !current.equals(model)
+                    && !mayReplace(current.asString(), stack.getType().getKey().asString())) {
                 return false;
             }
             if (model.equals(current)) {
@@ -49,6 +49,16 @@ public final class WeaponLooks {
             return true;
         }
         return false;
+    }
+
+    /**
+     * Whether an enchantment's look may go over the model an item shows now: the vanilla one, our own, or a weapon
+     * skin from RainsCosmetics — a skin is only for looks, an enchantment says what the weapon does, so it wins and
+     * the skin comes back once the enchantment is gone.
+     */
+    static boolean mayReplace(String current, String vanilla) {
+        return current == null || current.equals(vanilla) || current.startsWith("rainsenchants:")
+                || current.startsWith("rainsskins:");
     }
 
     /** A copy for the air: the first custom_model_data flag picks the fully charged model. */
