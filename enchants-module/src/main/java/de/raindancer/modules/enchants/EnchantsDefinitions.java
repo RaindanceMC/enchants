@@ -85,6 +85,15 @@ public final class EnchantsDefinitions {
                 EnchantDef.builder(RainsEnchants.REINFORCED).name("<gold>Reinforced").maxLevel(3)
                         .gear(Gear.ANY_GEAR).anvilCost(8).build(),
                 EnchantDef.builder(RainsEnchants.XP_SIPHON).name("<green>XP Siphon").maxLevel(1)
-                        .gear(Gear.HAND_TOOLS).anvilCost(4).build());
+                        .gear(Gear.HAND_TOOLS).anvilCost(4).build(),
+                // Fishing: RainsFishing reads them off the rod a catch comes up on.
+                EnchantDef.builder(RainsEnchants.DEEP_BITE).name("<blue>Deep Bite").maxLevel(3)
+                        .gear(Gear.FISHING_ROD).anvilCost(4).build(),
+                EnchantDef.builder(RainsEnchants.TWIN_CATCH).name("<red>Twin Catch").maxLevel(2)
+                        .gear(Gear.FISHING_ROD).anvilCost(6).build(),
+                EnchantDef.builder(RainsEnchants.TREASURE_HUNTER).name("<gold>Treasure Hunter").maxLevel(3)
+                        .gear(Gear.FISHING_ROD).anvilCost(8).build(),
+                EnchantDef.builder(RainsEnchants.MYTHIC_LURE).name("<aqua>Mythic Lure").maxLevel(3)
+                        .gear(Gear.FISHING_ROD).anvilCost(8).build());
     }
 }

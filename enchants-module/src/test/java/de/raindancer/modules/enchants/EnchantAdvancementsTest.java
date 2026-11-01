@@ -62,7 +62,7 @@ class EnchantAdvancementsTest {
                 "harvester", "bumper_crop", "smelting", "telekinesis", "chest_link", "shardlands", "first_shard",
                 "reinforced", "xp_siphon", "autopilot", "hypermiler", "need_for_speed",
                 "long_haul", "rocket_man", "running_on_fumes", "star_struck", "steady_hands",
-                "around_the_world"}) {
+                "around_the_world", "deep_bite", "twin_catch", "treasure_hunter", "mythic_lure"}) {
             assertThat(advancements.isLoaded("rainsenchants:" + id)).as(id).isTrue();
         }
     }

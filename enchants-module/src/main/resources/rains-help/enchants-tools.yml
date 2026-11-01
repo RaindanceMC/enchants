@@ -53,3 +53,9 @@ sections:
     title: Harvester
     text: |
       A hoe that harvests <b>and replants</b>: level I the crop you hit, II a 3×3, III a 5×5. Wheat, carrots, potatoes, beetroots and nether wart, only when fully grown. Sneak to harvest just one. Each crop costs durability. {url:https://wiki.raindancer118.de/enchants/harvester|wiki}
+  - question: What do the fishing enchantments do?
+    title: Fishing enchantments
+    text: |
+      Four go on a fishing rod — any rod, the fancy ones from fishing too — and work wherever fishing does (they need the fishing plugin on this server):
+      <white>Deep Bite</white> (I–III): fish bite sooner, 7% less waiting per level. <white>Twin Catch</white> (I–II): 5% per level that two fish come up at once. <white>Treasure Hunter</white> (I–III): a sea chest bites 1% more often per level. <white>Mythic Lure</white> (I–III, legendary): rarer fish and better chests come up more often, 8% per level.
+      Their shards drop in the shard world like all the others, and the better sea chests you fish up hold some too.

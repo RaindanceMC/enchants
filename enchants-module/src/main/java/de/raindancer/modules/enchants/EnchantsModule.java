@@ -54,7 +54,7 @@ public final class EnchantsModule implements FlexModule {
     /** Chest Link drops are gathered this many ticks before they are sent. */
     private static final int LINK_EVERY = 20;
 
-    private static final ModuleInfo INFO = ModuleInfo.of("enchants", "Enchants", "0.38.1")
+    private static final ModuleInfo INFO = ModuleInfo.of("enchants", "Enchants", "0.39.0")
             .describedAs("Thirty real enchantments, their shards and the shard world, with advancements")
             .by("Raindancer118");
 
@@ -113,6 +113,7 @@ public final class EnchantsModule implements FlexModule {
 
         context.listener(new AirListener(air, wornEffects));
         context.listener(new VeinAdvancementListener(advancements));
+        context.listener(new de.raindancer.modules.enchants.listener.FishingAdvancementListener(advancements));
         context.listener(new ElytraListener(elytra));
         context.listener(new de.raindancer.modules.enchants.listener.OffenceListener(
                 new de.raindancer.modules.enchants.service.OffenceService(context.plugin(), context.core().combat(), advancements),

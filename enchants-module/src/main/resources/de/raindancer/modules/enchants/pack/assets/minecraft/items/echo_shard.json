@@ -227,6 +227,34 @@
           "type": "minecraft:model",
           "model": "rainsenchants:item/shard/xp_siphon"
         }
+      },
+      {
+        "when": "rainsenchants:deep_bite",
+        "model": {
+          "type": "minecraft:model",
+          "model": "rainsenchants:item/shard/deep_bite"
+        }
+      },
+      {
+        "when": "rainsenchants:twin_catch",
+        "model": {
+          "type": "minecraft:model",
+          "model": "rainsenchants:item/shard/twin_catch"
+        }
+      },
+      {
+        "when": "rainsenchants:treasure_hunter",
+        "model": {
+          "type": "minecraft:model",
+          "model": "rainsenchants:item/shard/treasure_hunter"
+        }
+      },
+      {
+        "when": "rainsenchants:mythic_lure",
+        "model": {
+          "type": "minecraft:model",
+          "model": "rainsenchants:item/shard/mythic_lure"
+        }
       }
     ],
     "fallback": {

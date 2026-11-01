@@ -25,7 +25,8 @@ class EnchantsDefinitionsTest {
                 RainsEnchants.HEAT_SEEKING, RainsEnchants.THOR, RainsEnchants.VOLLEY, RainsEnchants.LIFESTEAL,
                 RainsEnchants.EXECUTIONER, RainsEnchants.BLEED, RainsEnchants.VENOM, RainsEnchants.CLEAVE,
                 RainsEnchants.ARMOR_PIERCE, RainsEnchants.BERSERK, RainsEnchants.OVERPOWER, RainsEnchants.UNDYING,
-                RainsEnchants.FUSION, RainsEnchants.AUTOPILOT, RainsEnchants.REINFORCED, RainsEnchants.XP_SIPHON);
+                RainsEnchants.FUSION, RainsEnchants.AUTOPILOT, RainsEnchants.REINFORCED, RainsEnchants.XP_SIPHON,
+                RainsEnchants.DEEP_BITE, RainsEnchants.TWIN_CATCH, RainsEnchants.TREASURE_HUNTER, RainsEnchants.MYTHIC_LURE);
         assertThat(def(RainsEnchants.CLEAVE).gear()).isEqualTo(Gear.AXES);
         assertThat(def(RainsEnchants.AUTOPILOT).maxLevel()).isEqualTo(3);
         assertThat(def(RainsEnchants.OVERPOWER).maxLevel()).isEqualTo(5);
@@ -91,5 +92,17 @@ class EnchantsDefinitionsTest {
         assertThat(def(RainsEnchants.XP_SIPHON).gear().matches("netherite_sword")).isTrue();
         assertThat(def(RainsEnchants.REINFORCED).gear().matches("elytra")).isTrue();
         assertThat(def(RainsEnchants.REINFORCED).gear().matches("diamond")).isFalse();
+    }
+
+    @Test
+    @DisplayName("the fishing enchantments go on fishing rods and nothing else")
+    void fishing() {
+        for (String key : new String[]{RainsEnchants.DEEP_BITE, RainsEnchants.TWIN_CATCH, RainsEnchants.TREASURE_HUNTER,
+                RainsEnchants.MYTHIC_LURE}) {
+            assertThat(def(key).gear()).as(key).isEqualTo(Gear.FISHING_ROD);
+            assertThat(def(key).gear().matches("fishing_rod")).isTrue();
+            assertThat(def(key).gear().matches("diamond_sword")).isFalse();
+        }
+        assertThat(de.raindancer.modules.enchants.rules.ShardRules.isLegendary(RainsEnchants.MYTHIC_LURE)).isTrue();
     }
 }

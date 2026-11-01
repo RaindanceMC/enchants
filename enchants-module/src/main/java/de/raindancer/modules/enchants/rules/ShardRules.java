@@ -22,21 +22,21 @@ public final class ShardRules {
     static {
         for (String key : new String[]{RainsEnchants.NIGHT_VISION, RainsEnchants.DOUBLE_JUMP, RainsEnchants.SWIFTNESS,
                 RainsEnchants.HASTE, RainsEnchants.WISDOM, RainsEnchants.HARVESTER, RainsEnchants.SMELTING,
-                RainsEnchants.TELEKINESIS, RainsEnchants.XP_SIPHON}) {
+                RainsEnchants.TELEKINESIS, RainsEnchants.XP_SIPHON, RainsEnchants.DEEP_BITE}) {
             WEIGHTS.put(key, COMMON);
         }
         for (String key : new String[]{RainsEnchants.VEINMINER, RainsEnchants.EXCAVATOR, RainsEnchants.CHEST_LINK,
                 RainsEnchants.AUTO_SELL, RainsEnchants.BOOST, RainsEnchants.VOLLEY, RainsEnchants.BLEED,
-                RainsEnchants.VENOM, RainsEnchants.CLEAVE, RainsEnchants.ARMOR_PIERCE}) {
+                RainsEnchants.VENOM, RainsEnchants.CLEAVE, RainsEnchants.ARMOR_PIERCE, RainsEnchants.TWIN_CATCH}) {
             WEIGHTS.put(key, UNCOMMON);
         }
         for (String key : new String[]{RainsEnchants.FLIGHT, RainsEnchants.LAUNCH, RainsEnchants.SOULBOUND,
                 RainsEnchants.HEAT_SEEKING,
                 RainsEnchants.LIFESTEAL, RainsEnchants.EXECUTIONER, RainsEnchants.BERSERK, RainsEnchants.OVERPOWER,
-                RainsEnchants.UNDYING, RainsEnchants.FUSION, RainsEnchants.AUTOPILOT}) {
+                RainsEnchants.UNDYING, RainsEnchants.FUSION, RainsEnchants.AUTOPILOT, RainsEnchants.TREASURE_HUNTER}) {
             WEIGHTS.put(key, RARE);
         }
-        for (String key : new String[]{RainsEnchants.THOR, RainsEnchants.REINFORCED}) {
+        for (String key : new String[]{RainsEnchants.THOR, RainsEnchants.REINFORCED, RainsEnchants.MYTHIC_LURE}) {
             WEIGHTS.put(key, LEGENDARY);
         }
     }

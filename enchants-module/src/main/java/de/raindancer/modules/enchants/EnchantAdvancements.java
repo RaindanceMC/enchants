@@ -160,6 +160,14 @@ public final class EnchantAdvancements {
                 "Step through a portal into the shard world", AdvancementFrame.TASK, 1);
         child("first_shard", "shardlands", Material.ECHO_SHARD, "Shard Hunter",
                 "Take an enchantment's shard off a monster in the shard world", AdvancementFrame.TASK, 1);
+        child("deep_bite", "root", Material.FISHING_ROD, "Quick on the Hook",
+                "Land a catch with a Deep Bite rod", AdvancementFrame.TASK, 1);
+        child("twin_catch", "root", Material.COD, "Seeing Double",
+                "Land a catch with a Twin Catch rod", AdvancementFrame.TASK, 1);
+        child("treasure_hunter", "root", Material.CHEST, "X Marks the Spot",
+                "Land a catch with a Treasure Hunter rod", AdvancementFrame.TASK, 1);
+        child("mythic_lure", "root", Material.HEART_OF_THE_SEA, "Something Stirs Below",
+                "Land a catch with a Mythic Lure rod", AdvancementFrame.GOAL, 1);
         child("full_set", "root", Material.NETHER_STAR, "Fully Enchanted",
                 "Use every one of Rain's " + counted.size() + " enchantments", AdvancementFrame.CHALLENGE,
                 counted.size());
