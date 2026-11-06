@@ -17,6 +17,16 @@ public final class HeatSeeking {
     private HeatSeeking() {
     }
 
+    /**
+     * Whether a shot leaves a companion alone: the shooter's own pet always, somebody else's where they may not
+     * fight — hurting a pet is hurting its owner.
+     *
+     * @param owner whose pet it is, empty for a mob that is nobody's
+     */
+    public static boolean sparesPet(UUID shooter, java.util.Optional<UUID> owner, boolean mayFightOwner) {
+        return owner.isPresent() && (owner.get().equals(shooter) || !mayFightOwner);
+    }
+
     /** Half the cone's opening around the aim, in degrees. */
     /** How far off the crosshair a precise shot still locks on, in degrees: a near miss, not something else. */
     public static final double PRECISE_CONE = 5;

@@ -113,4 +113,15 @@ class HeatSeekingTest {
         }
         assertThat(HeatSeeking.PRECISE_CONE).isLessThan(HeatSeeking.cone(1));
     }
+
+    @org.junit.jupiter.api.Test
+    @org.junit.jupiter.api.DisplayName("never your own pet; somebody else's only where players may fight")
+    void pets() {
+        java.util.UUID me = java.util.UUID.randomUUID();
+        java.util.UUID them = java.util.UUID.randomUUID();
+        org.assertj.core.api.Assertions.assertThat(HeatSeeking.sparesPet(me, java.util.Optional.of(me), true)).isTrue();
+        org.assertj.core.api.Assertions.assertThat(HeatSeeking.sparesPet(me, java.util.Optional.of(them), false)).isTrue();
+        org.assertj.core.api.Assertions.assertThat(HeatSeeking.sparesPet(me, java.util.Optional.of(them), true)).isFalse();
+        org.assertj.core.api.Assertions.assertThat(HeatSeeking.sparesPet(me, java.util.Optional.empty(), false)).isFalse();
+    }
 }

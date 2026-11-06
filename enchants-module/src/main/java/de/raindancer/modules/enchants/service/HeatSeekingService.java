@@ -182,6 +182,11 @@ public final class HeatSeekingService {
             return false;
         }
         String world = shooter.getWorld().getName();
+        java.util.Optional<UUID> petOwner = combat.companions().ownerOf(each.getUniqueId());
+        if (petOwner.isPresent() && HeatSeeking.sparesPet(shooter.getUniqueId(), petOwner,
+                combat.judge(Attack.between(shooter.getUniqueId(), petOwner.get(), world)) == Verdict.ALLOWED)) {
+            return false;
+        }
         if (each instanceof Player player) {
             if (player.getGameMode() == GameMode.CREATIVE || player.getGameMode() == GameMode.SPECTATOR
                     || !shooter.canSee(player)
