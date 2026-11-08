@@ -1,5 +1,6 @@
 package de.raindancer.modules.enchants;
 
+import de.raindancer.core.content.enchant.EnchantUnlocks;
 import de.raindancer.core.content.enchant.CustomEnchantments;
 
 import de.raindancer.core.data.settings.SettingsStore;
@@ -54,7 +55,7 @@ public final class EnchantsModule implements FlexModule {
     /** Chest Link drops are gathered this many ticks before they are sent. */
     private static final int LINK_EVERY = 20;
 
-    private static final ModuleInfo INFO = ModuleInfo.of("enchants", "Enchants", "0.39.1")
+    private static final ModuleInfo INFO = ModuleInfo.of("enchants", "Enchants", "0.40.0")
             .describedAs("Thirty real enchantments, their shards and the shard world, with advancements")
             .by("Raindancer118");
 
@@ -83,6 +84,8 @@ public final class EnchantsModule implements FlexModule {
         }
     }
 
+    private java.util.function.BooleanSupplier shardsOffered;
+
     @Override
     public void enable(ModuleContext context) {
         SettingsStore<EnchantsSettings> settings = context.settings(EnchantsSettings.class, EnchantsSettings.DEFAULTS);
@@ -90,6 +93,9 @@ public final class EnchantsModule implements FlexModule {
                 context.chat().brand()::chatPrefix);
         context.core().messages().seriousFrom(EnchantsModule.class.getResourceAsStream("messages-serious.yml"));
         PermissionNodes.register(context.plugin().getServer());
+        // Guilds hide unlocking enchantments with shards while no shards can be earned here.
+        shardsOffered = () -> settings.current().shardWorldEnabled();
+        EnchantUnlocks.shardsFrom(context.plugin(), shardsOffered);
 
         // Before the advancements are defined: the full set counts only what is switched on.
         CustomEnchantments.switchOff(settings.current().switchedOff());
@@ -196,6 +202,9 @@ public final class EnchantsModule implements FlexModule {
 
     @Override
     public void disable() {
+        if (shardsOffered != null) {
+            EnchantUnlocks.retractShards(shardsOffered);
+        }
         CustomEnchantments.switchOff(java.util.List.of());
         if (links != null) {
             links.flush();

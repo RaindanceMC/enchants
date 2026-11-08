@@ -63,7 +63,7 @@
         <!-- 0.37.0: more Autopilot advancements — Running on Fumes, Star-Struck, Steady Hands (1000 blocks at one held altitude), Around the World (100 000 blocks in all). -->
         <!-- 0.38.0: Autopilot's cruise speed is sneak and scroll — scrolling alone moves the hotbar again; a tap of sneak (no scrolling while held) switches it off. -->
         <!-- 0.39.1: heat-seeking never locks onto your own pet, and onto somebody else's only where you may fight them (Core's companions). -->
-        <plugin.version>0.39.1</plugin.version>
+        <plugin.version>0.40.0</plugin.version>
     </properties>
 
     <dependencies>
