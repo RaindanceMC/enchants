@@ -2,7 +2,7 @@ id: enchants-staff
 title: Enchantments for staff
 summary: "Handing out books, shards and /give, summoning shard-world creatures, switching enchantments off."
 intro: |
-  A tidy toolbox for anyone with the badge.
+  Commands for handing out books and shards and for managing enchantments.
 icon: COMMAND_BLOCK
 category: Staff
 order: 30
@@ -21,7 +21,7 @@ sections:
   - question: How do I hand out shards?
     title: Shards
     text: |
-      {cmd:/enchants shard [player] [enchantment] [amount]} — amount up to 6400 in stacks of 64. Good for events and tests.
+      {cmd:/enchants shard [player] [enchantment] [amount]} gives up to 6400 shards, in stacks of 64. Good for events and tests.
   - question: Can /give do this too?
     title: /give
     permission: minecraft.command.give

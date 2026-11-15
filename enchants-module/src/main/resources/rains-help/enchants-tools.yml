@@ -2,7 +2,7 @@ id: enchants-tools
 title: Tool enchantments
 summary: Veinminer, Excavator, Haste, Smelting, Telekinesis, Chest Link, Auto Sell, XP Siphon, Wisdom and Harvester.
 intro: |
-  For people who would rather dig less and collect more. Ten enchantments, all on pickaxes, axes, shovels or hoes.
+  Ten enchantments for pickaxes, axes, shovels and hoes. They mine more per swing and collect the drops for you.
 icon: DIAMOND_PICKAXE
 category: Items & enchantments
 order: 22
@@ -15,20 +15,20 @@ sections:
   - question: What does Veinminer do?
     title: Veinminer
     text: |
-      Break one block of a vein and the whole vein comes with it — ores, logs, whatever the server's vein mining counts. Pickaxes, axes and shovels. Without the enchantment you only get the block you hit.
-      {cmd:/vein} switches it on or off for you; {cmd:/ctrl-z} gives your last vein back (within 2 minutes, nearby, against returning what it dropped). Cannot go with Excavator. {url:https://wiki.raindancer118.de/enchants/veinminer|wiki}
+      Break one block of a vein and the whole vein comes with it: ores, logs and whatever else the server's vein mining counts. Works on pickaxes, axes and shovels. Without the enchantment you only get the block you hit.
+      {cmd:/vein} switches it on or off for you. {cmd:/ctrl-z} restores your last vein if you use it within 2 minutes, nearby, and give back what it dropped. It cannot go with Excavator. {url:https://wiki.raindancer118.de/enchants/veinminer|wiki}
   - question: What does Excavator do?
     title: Excavator
     text: |
-      Every block you break takes the 8 around it: a 3×3, one deep — the wall in front of you, or floor and ceiling when you look steeply up or down. Only blocks the tool suits and not much harder than the one you hit. <b>Sneak</b> to mine a single block. Pickaxes and shovels; not with Veinminer. {url:https://wiki.raindancer118.de/enchants/excavator|wiki}
+      Every block you break takes the 8 around it: a 3×3, one deep: the wall in front of you, or floor and ceiling when you look steeply up or down. It only takes blocks the tool suits and that are not much harder than the one you hit. <b>Sneak</b> to mine a single block. Works on pickaxes and shovels, and not with Veinminer. {url:https://wiki.raindancer118.de/enchants/excavator|wiki}
   - question: What does Haste do?
     title: Haste
     text: |
-      Level I or II gives you Haste I or II while the tool is in your main hand — no particles. Haste from a beacon or potion is never touched. {url:https://wiki.raindancer118.de/enchants/haste|wiki}
+      Level I or II gives you Haste I or II while the tool is in your main hand, without particles. Haste from a beacon or potion is never touched. {url:https://wiki.raindancer118.de/enchants/haste|wiki}
   - question: What does Smelting do?
     title: Smelting
     text: |
-      Blocks you mine drop smelted, as a furnace would make them, with the furnace's experience. Pickaxes, axes, shovels. It happens before Auto Sell, so you sell ingots. Cannot go with Silk Touch. {url:https://wiki.raindancer118.de/enchants/smelting|wiki}
+      Blocks you mine drop smelted, as a furnace would make them, with the furnace's experience. Works on pickaxes, axes and shovels. It happens before Auto Sell, so you sell ingots. It cannot go with Silk Touch. {url:https://wiki.raindancer118.de/enchants/smelting|wiki}
   - question: What does Telekinesis do?
     title: Telekinesis
     text: |
@@ -36,11 +36,11 @@ sections:
   - question: What does Chest Link do?
     title: Chest Link
     text: |
-      <b>Sneak and right-click</b> a chest, barrel or shulker box (you must be allowed to open it) to link the tool. What you mine then goes into that chest, from anywhere. Chest full, gone, or access lost? The drops come to you instead. Block drops only. {url:https://wiki.raindancer118.de/enchants/chest-link|wiki}
+      <b>Sneak and right-click</b> a chest, barrel or shulker box (you must be allowed to open it) to link the tool. What you mine then goes into that chest, from anywhere. If the chest is full, gone or no longer yours to open, the drops come to you instead. Block drops only. {url:https://wiki.raindancer118.de/enchants/chest-link|wiki}
   - question: What does Auto Sell do?
     title: Auto Sell
     text: |
-      On a tool: drops are sold on the spot at the shop's price; what the shop does not buy drops normally. On <b>one</b> chest (via anvil, crafting or the shop): an <b>Auto Sell Chest</b> that sells whatever goes in — by hand or hopper — and pays whoever placed it, even offline. Anybody may use it; it stays a single chest, explosions cannot break it. The shop's daily limits apply. {url:https://wiki.raindancer118.de/enchants/auto-sell|wiki}
+      On a tool: drops are sold on the spot at the shop's price; what the shop does not buy drops normally. On <b>one</b> chest (via anvil, crafting or the shop): an <b>Auto Sell Chest</b> that sells whatever goes in, by hand or by hopper, and pays whoever placed it, even offline. Anybody may use it. It stays a single chest and explosions cannot break it. The shop's daily limits apply. {url:https://wiki.raindancer118.de/enchants/auto-sell|wiki}
   - question: What does XP Siphon do?
     title: XP Siphon
     text: |
@@ -48,7 +48,7 @@ sections:
   - question: What does Wisdom do?
     title: Wisdom
     text: |
-      Every level adds {setting:enchants:wisdom-percent-per-level|percent} extra experience on top of the normal amount, so level III is three times that bonus. It counts blocks you break and mobs you kill — not fishing, bottles or the furnace experience from Smelting. {url:https://wiki.raindancer118.de/enchants/wisdom|wiki}
+      Every level adds {setting:enchants:wisdom-percent-per-level|percent} extra experience on top of the normal amount, so level III is three times that bonus. It counts blocks you break and mobs you kill, but not fishing, bottles or the furnace experience from Smelting. {url:https://wiki.raindancer118.de/enchants/wisdom|wiki}
   - question: What does Harvester do?
     title: Harvester
     text: |
@@ -56,6 +56,6 @@ sections:
   - question: What do the fishing enchantments do?
     title: Fishing enchantments
     text: |
-      Four go on a fishing rod — any rod, the fancy ones from fishing too — and work wherever fishing does (they need the fishing plugin on this server):
-      <white>Deep Bite</white> (I–III): fish bite sooner, 7% less waiting per level. <white>Twin Catch</white> (I–II): 5% per level that two fish come up at once. <white>Treasure Hunter</white> (I–III): a sea chest bites 1% more often per level. <white>Mythic Lure</white> (I–III, legendary): rarer fish and better chests come up more often, 8% per level.
-      Their shards drop in the shard world like all the others, and the better sea chests you fish up hold some too.
+      Four go on a fishing rod, including the special rods from fishing. They work wherever fishing does and need the fishing plugin on this server:
+      <white>Deep Bite</white> (I-III): fish bite sooner, 7% less waiting per level. <white>Twin Catch</white> (I-II): 5% per level that two fish come up at once. <white>Treasure Hunter</white> (I-III): a sea chest bites 1% more often per level. <white>Mythic Lure</white> (I-III, legendary): rarer fish and better chests come up more often, 8% per level.
+      Their shards drop in the shard world like all the others, and the better sea chests you fish up hold some as well.
