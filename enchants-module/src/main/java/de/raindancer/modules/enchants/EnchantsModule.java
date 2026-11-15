@@ -91,7 +91,6 @@ public final class EnchantsModule implements FlexModule {
         SettingsStore<EnchantsSettings> settings = context.settings(EnchantsSettings.class, EnchantsSettings.DEFAULTS);
         context.core().messages().defineFrom(EnchantsModule.class.getResourceAsStream("messages.yml"),
                 context.chat().brand()::chatPrefix);
-        context.core().messages().seriousFrom(EnchantsModule.class.getResourceAsStream("messages-serious.yml"));
         PermissionNodes.register(context.plugin().getServer());
         // Guilds hide unlocking enchantments with shards while no shards can be earned here.
         shardsOffered = () -> settings.current().shardWorldEnabled();
