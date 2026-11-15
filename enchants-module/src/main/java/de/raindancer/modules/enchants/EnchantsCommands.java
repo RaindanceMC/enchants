@@ -19,10 +19,10 @@ public final class EnchantsCommands {
     public static List<ModuleCommand> declared() {
         return List.of(ModuleCommand.of("enchants", "Lists Rain's enchantments and hands out books",
                 new EnchantsCommand(EnchantsCommands::require))
-                .taking("list", "give <player> <enchantment> [level] — staff"),
+                .taking("list", "give <player> <enchantment> [level]: staff"),
                 ModuleCommand.of("give", "The game's /give, knowing Rain's shards and books too",
                         new de.raindancer.modules.enchants.command.GiveCommand(EnchantsCommands::require))
-                        .taking("<player> <item> [count] — also telekinesis_shard, flight_book, flight_book_3")
+                        .taking("<player> <item> [count]: also telekinesis_shard, flight_book, flight_book_3")
                         .needing(de.raindancer.modules.enchants.command.GiveCommand.PERMISSION),
                 ModuleCommand.of("autopilot", "Wearing an Autopilot elytra: flight assist on or off; economy for economy mode, speed <n> for the cruise speed",
                         new de.raindancer.modules.enchants.command.AutopilotCommand(EnchantsCommands::require)),

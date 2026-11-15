@@ -98,10 +98,10 @@ public record EnchantsSettings(
         Material portalKey,
 
         @In("enchants/shards") @Title("Shard chance, percent") @Range(min = 1, max = 100)
-        @Describe("How likely a creature of the shard world — any kind, monster or animal — drops its shards when a "
-                + "player kills it, as many as its tier — a Shadowed one 1, Shardborn 2, Crystal 3-4, a Shard Tyrant 6-8, "
-                + "a Shard Overlord 10-14 — and 30 to 50 % more on top. Only creatures that came by themselves: bred, "
-                + "spawner, egg and command ones never do.")
+        @Describe("How likely a creature of the shard world (any kind, monster or animal) drops its shards when a "
+                + "player kills it. It drops as many as its tier: a Shadowed one 1, Shardborn 2, Crystal 3-4, a Shard Tyrant 6-8, "
+                + "a Shard Overlord 10-14, and 30 to 50 % more on top. Only creatures that came by themselves count: bred, "
+                + "spawner, egg and command ones never drop shards.")
         @Key("shard-drop-percent")
         int shardDropPercent,
 

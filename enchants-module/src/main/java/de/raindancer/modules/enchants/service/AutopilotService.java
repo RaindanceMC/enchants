@@ -390,7 +390,7 @@ public final class AutopilotService {
                 "cruise", String.valueOf(Math.round(cruisePerSecond(player))),
                 "mode", economy(player) ? "Eco" : "Cruise",
                 "fuel", countRockets(player.getInventory()) + " rockets" + boost,
-                "altitude", flight.holdY == null ? "—" : String.valueOf(Math.round(flight.holdY))));
+                "altitude", flight.holdY == null ? "none" : String.valueOf(Math.round(flight.holdY))));
     }
 
     public void quit(Player player) {

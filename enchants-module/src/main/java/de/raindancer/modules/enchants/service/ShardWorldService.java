@@ -40,7 +40,7 @@ public final class ShardWorldService {
                         + "Create it beforehand (amplified) and restart.", config.shardWorld());
                 return Optional.empty();
             }
-            log.info("Creating the shard world '{}' (amplified) — the first start takes a moment.", config.shardWorld());
+            log.info("Creating the shard world '{}' (amplified). The first start takes a moment.", config.shardWorld());
             world = new WorldCreator(config.shardWorld()).environment(World.Environment.NORMAL)
                     .type(WorldType.AMPLIFIED).createWorld();
             if (world == null) {
