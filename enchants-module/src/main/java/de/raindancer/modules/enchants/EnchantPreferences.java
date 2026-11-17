@@ -25,7 +25,7 @@ final class EnchantPreferences {
                     HeatSeekingService.set(player, index == 0);
                     messages.send(player, index == 0 ? "enchants.heat-seeking-precise" : "enchants.heat-seeking-wide");
                 });
-        Preference economy = Preference.toggle("enchants:autopilot-economy", GROUP, "Autopilot economy mode",
+        Preference economy = Preference.toggle("enchants:autopilot-economy", GROUP, "Elytra autopilot economy mode",
                 "Lets the Autopilot save rockets by gliding more and boosting less.", autopilot::economy,
                 autopilot::setEconomy);
         return List.of(heat, economy);
