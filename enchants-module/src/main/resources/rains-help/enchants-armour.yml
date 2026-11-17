@@ -13,6 +13,10 @@ commands: [autopilot]
 related: [enchants, enchants-gear]
 wiki: https://wiki.raindancer118.de/enchants
 sections:
+  - question: Can I unlock abilities without gear?
+    title: Abilities tree
+    text: |
+      {if:enchants:abilities.enabled}Yes. Open {cmd:/enchants abilities} (or /skills, then Abilities) and unlock ranks for good: Double Jump up to III, Swiftness up to II, Night Vision I. A rank costs shards of that ability's own enchantment and money: rank 1 takes the first number of {setting:enchants:abilities.shards-per-rank}, rank 2 the second, and past the list each rank doubles. The money is {setting:enchants:abilities.money-per-rank} times the rank number. Both are taken together or not at all.{else}Buying abilities is switched off on this server.{/if} An unlocked rank works with no gear on. The enchantment on boots, leggings or a helmet still works too, and the better of the two counts. Nothing in the tree can be reset: you paid for it in items. Shards drop in the {topic:shard-world}.
   - question: What does Night Vision do?
     title: Night Vision
     text: |

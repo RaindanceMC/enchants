@@ -17,7 +17,7 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-/** {@code /enchants list} and {@code /enchants give <player> <enchantment> [level]}. */
+/** {@code /enchants list}, {@code /enchants abilities} and {@code /enchants give <player> <enchantment> [level]}. */
 public final class EnchantsCommand implements BasicCommand {
 
     private final Supplier<EnchantsServices> services;
@@ -36,6 +36,14 @@ public final class EnchantsCommand implements BasicCommand {
             for (EnchantDef def : EnchantsDefinitions.all()) {
                 live.messages().send(sender, "enchants.list-line", "name", def.path(), "max", def.maxLevel(),
                         "gear", def.gear().name().toLowerCase(Locale.ROOT).replace('_', ' '));
+            }
+            return;
+        }
+        if (first.equals("abilities")) {
+            if (sender instanceof Player player) {
+                live.abilities().open(player, null);
+            } else {
+                live.messages().send(sender, "enchants.players-only");
             }
             return;
         }
@@ -148,8 +156,8 @@ public final class EnchantsCommand implements BasicCommand {
     public Collection<String> suggest(CommandSourceStack source, String[] args) {
         String typed = args.length == 0 ? "" : args[args.length - 1].toLowerCase(Locale.ROOT);
         List<String> options = switch (args.length) {
-            case 0, 1 -> source.getSender().hasPermission(PermissionNodes.GIVE) ? List.of("list", "give", "shard", "shardmob")
-                    : List.of("list");
+            case 0, 1 -> source.getSender().hasPermission(PermissionNodes.GIVE) ? List.of("list", "abilities", "give", "shard", "shardmob")
+                    : List.of("list", "abilities");
             case 2 -> staffWord(args[0]) && source.getSender().hasPermission(PermissionNodes.GIVE)
                     ? services.get().server().getOnlinePlayers().stream().map(Player::getName).toList() : List.of();
             case 3 -> staffWord(args[0])

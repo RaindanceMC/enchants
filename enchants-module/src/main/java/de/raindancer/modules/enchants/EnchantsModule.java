@@ -14,6 +14,12 @@ import de.raindancer.modules.enchants.listener.AirListener;
 import de.raindancer.modules.enchants.listener.VeinAdvancementListener;
 import de.raindancer.modules.enchants.rules.AirRule;
 import de.raindancer.modules.enchants.service.AirService;
+import de.raindancer.modules.enchants.service.AbilitiesSkillView;
+import de.raindancer.modules.enchants.service.AbilityService;
+import de.raindancer.modules.enchants.screen.AbilitiesScreen;
+import de.raindancer.modules.enchants.store.AbilityStore;
+import de.raindancer.core.ui.tree.SkillView;
+import de.raindancer.core.ui.tree.Skills;
 import de.raindancer.modules.enchants.listener.ElytraListener;
 import de.raindancer.modules.enchants.listener.ShardListener;
 import de.raindancer.modules.enchants.listener.TabListener;
@@ -37,7 +43,8 @@ import java.util.List;
 /**
  * Rain's own enchantments — Veinminer (the enchantment itself; vein mining stays Veinminer's, gated by
  * veintoggle), Night Vision, Flight, Double Jump, Boost, Launch, Swiftness, Haste, Soulbound, Wisdom,
- * Excavator, Harvester, Smelting, Telekinesis and Chest Link — and the advancements for them. Auto Sell is
+ * Excavator, Harvester, Smelting, Telekinesis and Chest Link — and the advancements for them. Double Jump,
+ * Swiftness and Night Vision can also be unlocked in the abilities tree. Auto Sell is
  * registered here too and enforced by the economy, which knows the prices.
  *
  * <p>Nothing here hands the enchantments out: no enchanting table, villager or loot entry. A boss drop
@@ -55,7 +62,7 @@ public final class EnchantsModule implements FlexModule {
     /** Chest Link drops are gathered this many ticks before they are sent. */
     private static final int LINK_EVERY = 20;
 
-    private static final ModuleInfo INFO = ModuleInfo.of("enchants", "Enchants", "0.41.0")
+    private static final ModuleInfo INFO = ModuleInfo.of("enchants", "Enchants", "0.42.0")
             .describedAs("Thirty real enchantments, their shards and the shard world, with advancements")
             .by("Raindancer118");
 
@@ -101,11 +108,22 @@ public final class EnchantsModule implements FlexModule {
         settings.onChange(fresh -> CustomEnchantments.switchOff(fresh.switchedOff()));
         EnchantAdvancements advancements = new EnchantAdvancements(context.core().advancements());
         advancements.define();
+        AbilityService abilities = new AbilityService(AbilityService.loadTree(), new AbilityStore(), settings::current,
+                AbilityService.livePurse());
         air = new AirService(new AirRule(), new AirStore(), settings::current, advancements,
                 context.core().effects(), context.core().messages(), context.core().actionBars(),
-                context.core().flight());
+                context.core().flight(), abilities);
         context.closeWith(air.follow(context.core()));
-        wornEffects = new WornEffectService(advancements);
+        wornEffects = new WornEffectService(advancements, abilities);
+        AbilitiesScreen abilityScreen = new AbilitiesScreen(abilities, context.core().messages(), context.chat().brand());
+        // /skills lists the tree beside the other skills (Core 2.36.0's registry); /enchants abilities opens it without.
+        try {
+            SkillView view = new AbilitiesSkillView(abilities, abilityScreen::open);
+            Skills.register(context.plugin(), view);
+            context.closeWith(() -> Skills.unregister(view.id()));
+        } catch (LinkageError olderCore) {
+            context.log().info("RainsCore is older than 2.36.0: abilities are not listed in /skills.");
+        }
         ElytraService elytra = new ElytraService(new ElytraStore(), settings::current, advancements,
                 context.core().effects(), context.core().messages());
         ToolService tools = new ToolService(context.plugin(), settings::current, advancements,
@@ -169,7 +187,7 @@ public final class EnchantsModule implements FlexModule {
             context.log().info("RainsCore is older than 2.103.0: heat-seeking aim and autopilot economy are not on /preferences.");
         }
         EnchantsCommands.ready(new EnchantsServices(context.plugin().getServer(), context.core().messages(), shardMobs,
-                autopilot));
+                autopilot, abilityScreen));
 
         int[] beat = {0};
         java.util.random.RandomGenerator hazeDice = new java.util.SplittableRandom();
