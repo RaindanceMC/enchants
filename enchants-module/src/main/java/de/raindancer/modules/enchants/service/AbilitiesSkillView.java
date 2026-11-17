@@ -69,7 +69,8 @@ public final class AbilitiesSkillView implements SkillView {
 
     @Override
     public int pointsLeft(UUID player) {
-        return 0;
+        Player online = Bukkit.getPlayer(player);
+        return online == null ? 0 : service.pointsLeft(online);
     }
 
     @Override

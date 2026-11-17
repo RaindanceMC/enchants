@@ -1,14 +1,16 @@
 package de.raindancer.modules.enchants.service;
 
 import de.raindancer.core.content.enchant.RainsEnchants;
-import de.raindancer.core.social.economy.Money;
 import de.raindancer.core.ui.tree.SkillTree;
+import de.raindancer.core.ui.tree.TreeNode;
 import de.raindancer.modules.enchants.EnchantsSettings;
 import de.raindancer.modules.enchants.store.AbilityStore;
+import de.raindancer.core.ui.tree.SkillPoints;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,54 +27,27 @@ import static org.mockito.Mockito.when;
 
 class AbilityServiceTest {
 
-    /** A purse that keeps its books in plain fields: one currency unit is 100, no price changes. */
-    private static final class Purse implements AbilityService.Purse {
-        int shards;
-        long money;
-        boolean shardsVanish;
-        boolean bankRefuses;
-        int taken;
-        long charged;
-        long refunded;
+    /** The adventurer's pool, kept in two fields: a level and the points the skills' own trees have taken. */
+    private static final class Pool implements SkillPoints.Pool {
+        int level = 30;
+        int total = 30;
+        int spentBySkills;
 
-        public int shards(Player player, String enchantment) {
-            return shards;
+        public int level(UUID player) {
+            return level;
         }
 
-        public boolean takeShards(Player player, String enchantment, int amount) {
-            if (shardsVanish || amount > shards) {
-                return false;
-            }
-            shards -= amount;
-            taken += amount;
-            return true;
+        public int total(UUID player) {
+            return total;
         }
 
-        public Money quote(Money written) {
-            return written;
-        }
-
-        public Money balance(Player player) {
-            return Money.of(money);
-        }
-
-        public Optional<Money> charge(Player player, Money written) {
-            if (bankRefuses || money < written.minor()) {
-                return Optional.empty();
-            }
-            money -= written.minor();
-            charged += written.minor();
-            return Optional.of(written);
-        }
-
-        public void refund(Player player, Money taken) {
-            money += taken.minor();
-            refunded += taken.minor();
+        public int spent(UUID player) {
+            return spentBySkills;
         }
     }
 
     private final Map<NamespacedKey, Object> data = new HashMap<>();
-    private final Purse purse = new Purse();
+    private final Pool pool = new Pool();
     private Player player;
     private AbilityService service;
     private EnchantsSettings settings = EnchantsSettings.DEFAULTS;
@@ -88,7 +63,14 @@ class AbilityServiceTest {
         player = mock(Player.class);
         when(player.getUniqueId()).thenReturn(UUID.randomUUID());
         when(player.getPersistentDataContainer()).thenReturn(pdc);
-        service = new AbilityService(AbilityService.loadTree(), new AbilityStore(), () -> settings, purse);
+        SkillPoints.provide(null, pool);
+        service = new AbilityService(AbilityService.loadTree(), new AbilityStore(), () -> settings,
+                AbilityService.livePoints());
+    }
+
+    @AfterEach
+    void clear() {
+        SkillPoints.clear();
     }
 
     private int rank(String node) {
@@ -105,98 +87,95 @@ class AbilityServiceTest {
     }
 
     @Test
-    @DisplayName("rank 1 costs 4 shards of the ability's enchantment and 20k, and is kept")
-    void firstRank() {
-        purse.shards = 10;
-        purse.money = 5_000_000;
+    @DisplayName("Double Jump costs 3 points a rank, and needs Adventurer level 10, 15 and 20")
+    void costsAndLevels() {
+        SkillTree tree = AbilityService.loadTree();
+        TreeNode jump = tree.node("double_jump").orElseThrow();
+        assertThat(jump.cost()).isEqualTo(3);
+        assertThat(jump.levelFor(1)).isEqualTo(10);
+        assertThat(jump.levelFor(2)).isEqualTo(15);
+        assertThat(jump.levelFor(3)).isEqualTo(20);
+        assertThat(tree.node("swiftness").orElseThrow().cost()).isEqualTo(2);
+        assertThat(tree.node("night_vision").orElseThrow().cost()).isEqualTo(2);
+    }
 
+    @Test
+    @DisplayName("a rank is paid from the shared pool and kept")
+    void firstRank() {
         assertThat(service.learn(player, "double_jump")).isEmpty();
 
         assertThat(rank("double_jump")).isEqualTo(1);
-        assertThat(purse.taken).isEqualTo(4);
-        assertThat(purse.charged).isEqualTo(2_000_000);
+        assertThat(service.spent(player)).isEqualTo(3);
+        assertThat(SkillPoints.spentElsewhere(player.getUniqueId())).as("not registered here yet").isZero();
         assertThat(service.unlocked(player, RainsEnchants.DOUBLE_JUMP)).isEqualTo(1);
         assertThat(service.unlocked(player, RainsEnchants.SWIFTNESS)).isZero();
     }
 
     @Test
-    @DisplayName("the second rank costs 8 shards and twice the money, the third 16 and three times")
+    @DisplayName("registered as a spender, the ranks come off the points skills shows as left")
+    void spenderCounts() {
+        SkillPoints.spender(null, "enchants", id -> service.spent(player));
+        service.learn(player, "double_jump");
+        service.learn(player, "swiftness");
+
+        assertThat(SkillPoints.left(player.getUniqueId())).isEqualTo(30 - 3 - 2);
+        pool.spentBySkills = 20;
+        assertThat(SkillPoints.left(player.getUniqueId())).isEqualTo(5);
+    }
+
+    @Test
+    @DisplayName("later ranks wait for their level; Double Jump II is out of reach at level 12")
     void laterRanks() {
-        purse.shards = 100;
-        purse.money = 100_000_000;
-        service.learn(player, "double_jump");
-        purse.taken = 0;
-        purse.charged = 0;
-
-        service.learn(player, "double_jump");
-        assertThat(purse.taken).isEqualTo(8);
-        assertThat(purse.charged).isEqualTo(4_000_000);
-
-        purse.taken = 0;
-        purse.charged = 0;
-        service.learn(player, "double_jump");
-        assertThat(purse.taken).isEqualTo(16);
-        assertThat(purse.charged).isEqualTo(6_000_000);
+        pool.level = 12;
+        assertThat(service.learn(player, "double_jump")).isEmpty();
+        assertThat(service.learn(player, "double_jump")).contains(SkillTree.Refusal.LEVEL);
+        pool.level = 20;
+        assertThat(service.learn(player, "double_jump")).isEmpty();
+        assertThat(service.learn(player, "double_jump")).isEmpty();
         assertThat(service.learn(player, "double_jump")).contains(SkillTree.Refusal.MAXED);
+        assertThat(service.spent(player)).isEqualTo(9);
     }
 
     @Test
-    @DisplayName("too few shards: refused, and not a coin taken")
-    void tooFewShards() {
-        purse.shards = 3;
-        purse.money = 5_000_000;
+    @DisplayName("too few points left: refused, and nothing changes")
+    void tooFewPoints() {
+        SkillPoints.spender(null, "enchants", id -> service.spent(player));
+        pool.spentBySkills = 28;
 
         assertThat(service.learn(player, "double_jump")).contains(SkillTree.Refusal.NO_POINTS);
-        assertThat(purse.charged).isZero();
-        assertThat(purse.taken).isZero();
         assertThat(rank("double_jump")).isZero();
+        assertThat(service.learn(player, "swiftness")).isEmpty();
+        assertThat(service.learn(player, "night_vision")).contains(SkillTree.Refusal.NO_POINTS);
     }
 
     @Test
-    @DisplayName("too little money: refused, and not a shard taken")
-    void tooLittleMoney() {
-        purse.shards = 50;
-        purse.money = 1_999_999;
+    @DisplayName("a point spent in abilities cannot be spent again in the skills' trees")
+    void notTwice() {
+        SkillPoints.spender(null, "enchants", id -> service.spent(player));
+        pool.total = 5;
+        service.learn(player, "double_jump");
 
-        assertThat(service.learn(player, "double_jump")).contains(SkillTree.Refusal.NO_POINTS);
-        assertThat(purse.taken).isZero();
-        assertThat(purse.shards).isEqualTo(50);
-        assertThat(rank("double_jump")).isZero();
+        assertThat(SkillPoints.left(player.getUniqueId())).isEqualTo(2);
+        assertThat(service.learn(player, "double_jump")).isPresent();
+        assertThat(service.learn(player, "swiftness")).isEmpty();
+        assertThat(SkillPoints.left(player.getUniqueId())).isZero();
     }
 
     @Test
-    @DisplayName("the bank refusing after the check leaves everything as it was")
-    void bankRefuses() {
-        purse.shards = 50;
-        purse.money = 5_000_000;
-        purse.bankRefuses = true;
+    @DisplayName("without the skills plugin there are no points: nothing is bought, and the reason is a refusal")
+    void noSkillsPlugin() {
+        SkillPoints.clear();
 
-        assertThat(service.learn(player, "double_jump")).contains(SkillTree.Refusal.NO_POINTS);
-        assertThat(purse.shards).isEqualTo(50);
-        assertThat(rank("double_jump")).isZero();
-    }
-
-    @Test
-    @DisplayName("shards gone after the money was taken: the money comes back and no rank is given")
-    void shardsVanish() {
-        purse.shards = 50;
-        purse.money = 5_000_000;
-        purse.shardsVanish = true;
-
-        assertThat(service.learn(player, "double_jump")).contains(SkillTree.Refusal.NO_POINTS);
-        assertThat(purse.money).isEqualTo(5_000_000);
-        assertThat(purse.refunded).isEqualTo(2_000_000);
-        assertThat(rank("double_jump")).isZero();
+        assertThat(service.pointsAvailable()).isFalse();
+        assertThat(service.learn(player, "night_vision")).contains(SkillTree.Refusal.NO_POINTS);
+        assertThat(rank("night_vision")).isZero();
     }
 
     @Test
     @DisplayName("with abilities switched off nothing is bought, but what is unlocked keeps working")
     void switchedOff() {
-        purse.shards = 50;
-        purse.money = 5_000_000;
         service.learn(player, "night_vision");
         settings = withEnabled(false);
-        purse.shards = 50;
 
         assertThat(service.learn(player, "swiftness")).contains(SkillTree.Refusal.NO_POINTS);
         assertThat(rank("swiftness")).isZero();
@@ -204,55 +183,23 @@ class AbilityServiceTest {
     }
 
     @Test
-    @DisplayName("no money in the setting means shards only")
-    void shardsOnly() {
-        settings = withMoney("0");
-        purse.shards = 4;
-
-        assertThat(service.learn(player, "double_jump")).isEmpty();
-        assertThat(purse.charged).isZero();
-        assertThat(rank("double_jump")).isEqualTo(1);
-    }
-
-    @Test
     @DisplayName("the effective level is the better of the gear and the unlock")
     void effective() {
-        purse.shards = 100;
-        purse.money = 100_000_000;
         service.learn(player, "swiftness");
+        pool.level = 30;
         service.learn(player, "swiftness");
 
         assertThat(service.effective(player, null, RainsEnchants.SWIFTNESS)).isEqualTo(2);
         assertThat(service.effective(player, null, RainsEnchants.DOUBLE_JUMP)).isZero();
     }
 
-    @Test
-    @DisplayName("what is missing is said as shards and money")
-    void shortfall() {
-        purse.shards = 1;
-        purse.money = 500;
-
-        AbilityService.Shortfall missing = service.shortfall(player, "double_jump", 1);
-        assertThat(missing.shards()).isEqualTo(3);
-        assertThat(missing.money()).isEqualTo(Money.of(2_000_000 - 500));
-    }
-
     private static EnchantsSettings withEnabled(boolean on) {
-        return copy(on, EnchantsSettings.DEFAULTS.abilitiesMoneyPerRank());
-    }
-
-    private static EnchantsSettings withMoney(String written) {
-        return copy(true, written);
-    }
-
-    private static EnchantsSettings copy(boolean on, String money) {
         EnchantsSettings d = EnchantsSettings.DEFAULTS;
         return new EnchantsSettings(d.flightSecondsPerLevel(), d.flightRechargeSeconds(), d.landingGraceSeconds(),
                 d.doubleJumpPowerPercent(), d.boostRechargeSeconds(), d.boostSpeedPercent(), d.launchSpeed(),
                 d.launchCooldownSeconds(), d.wisdomPercentPerLevel(), d.shardWorldEnabled(), d.shardWorld(),
                 d.shardWorldRadius(), d.shardWorldMonsters(), d.portalKey(), d.shardDropPercent(),
                 d.shardWorldThunderPercent(), d.shardWorldHaze(), d.crystalWardenPerMille(),
-                d.autopilotTopSpeedPercent(), d.reinforcedPercentPerLevel(), d.switchedOff(), on,
-                d.abilitiesShardsPerRank(), money);
+                d.autopilotTopSpeedPercent(), d.reinforcedPercentPerLevel(), d.switchedOff(), on);
     }
 }

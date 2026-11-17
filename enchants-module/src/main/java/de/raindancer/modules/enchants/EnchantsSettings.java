@@ -145,25 +145,13 @@ public record EnchantsSettings(
 
         @In("enchants/abilities") @Title("Abilities tree")
         @Describe("Double Jump, Swiftness and Night Vision can be unlocked in /enchants abilities (and /skills) "
-                + "instead of enchanting boots, leggings and a helmet. Off stops buying new ranks; ranks "
-                + "already unlocked keep working.")
+                + "with skill points, instead of enchanting boots, leggings and a helmet. Needs the skills plugin. "
+                + "Off stops buying new ranks; ranks already unlocked keep working.")
         @Key("abilities.enabled")
-        boolean abilitiesEnabled,
-
-        @In("enchants/abilities") @Title("Shards per rank")
-        @Describe("Shards of the ability's own enchantment for rank 1, 2, 3 and so on, separated by commas. Past "
-                + "the last entry each rank costs double the one before: with 4, 8, 16 a fourth rank would be 32.")
-        @Key("abilities.shards-per-rank")
-        String abilitiesShardsPerRank,
-
-        @In("enchants/abilities") @Title("Money per rank")
-        @Describe("Money, written like 500 or 20k, times the rank number: 20k makes rank 1 cost 20k, rank 2 40k, "
-                + "rank 3 60k. Needs an economy; 0 takes only shards.")
-        @Key("abilities.money-per-rank")
-        String abilitiesMoneyPerRank) {
+        boolean abilitiesEnabled) {
 
     public static final EnchantsSettings DEFAULTS = new EnchantsSettings(30, 30, 8, 100, 90, 150, 200, 600, 50,
             true, "shardlands", 2500, 140, Material.AMETHYST_SHARD, 100, 70, 12, 2, 200, 25,
             java.util.List.of(de.raindancer.core.content.enchant.RainsEnchants.LAUNCH),
-            true, "4, 8, 16", "20k");
+            true);
 }

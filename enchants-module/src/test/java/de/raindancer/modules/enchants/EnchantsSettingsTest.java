@@ -32,8 +32,6 @@ class EnchantsSettingsTest {
         assertThat(defaults.autopilotTopSpeedPercent()).isEqualTo(200);
         assertThat(defaults.reinforcedPercentPerLevel()).isEqualTo(25);
         assertThat(defaults.abilitiesEnabled()).isTrue();
-        assertThat(defaults.abilitiesShardsPerRank()).isEqualTo("4, 8, 16");
-        assertThat(defaults.abilitiesMoneyPerRank()).isEqualTo("20k");
     }
 
     @Test

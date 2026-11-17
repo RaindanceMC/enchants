@@ -7,7 +7,6 @@ import de.raindancer.core.ui.tree.LearningMenu;
 import de.raindancer.core.ui.tree.SkillTree;
 import de.raindancer.core.ui.tree.TreeNode;
 import de.raindancer.modules.enchants.service.AbilityService;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -15,10 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-/** The abilities tree as Core's {@link LearningMenu}, answered for one player: shards and money, no points, no reset. */
+/** The abilities tree as Core's {@link LearningMenu}, answered for one player: skill points, no reset. */
 public final class AbilitiesScreen {
-
-    private static final MiniMessage MINI = MiniMessage.miniMessage();
 
     private final AbilityService service;
     private final Messages messages;
@@ -34,6 +31,10 @@ public final class AbilitiesScreen {
     public void open(Player viewer, Menu parent) {
         if (!service.enabled()) {
             messages.send(viewer, "enchants.abilities-off");
+            return;
+        }
+        if (!service.pointsAvailable()) {
+            messages.send(viewer, "enchants.abilities-need-skills");
             return;
         }
         new LearningMenu(viewer, brand, parent, new Answers(viewer)).open();
@@ -59,7 +60,7 @@ public final class AbilitiesScreen {
 
         @Override
         public String blurb() {
-            return "Unlock what an enchantment does, for good, with shards of it and some money.";
+            return "Unlock what an enchantment does, for good, with skill points.";
         }
 
         @Override
@@ -74,29 +75,25 @@ public final class AbilitiesScreen {
 
         @Override
         public int level() {
-            return 0;
+            return service.level(viewer);
         }
 
         @Override
         public String levelWord() {
-            return "level";
+            return "Adventurer level";
         }
 
         @Override
         public int points() {
-            return 0;
+            return service.pointsLeft(viewer) + service.spent(viewer);
         }
 
         @Override
         public int pointsLeft() {
-            return 0;
+            return service.pointsLeft(viewer);
         }
 
-        @Override
-        public boolean showsPoints() {
-            return false;
-        }
-
+        /** Unlocked for good: the ranks are not given back. */
         @Override
         public boolean resettable() {
             return false;
@@ -128,35 +125,8 @@ public final class AbilitiesScreen {
         }
 
         @Override
-        public String price(TreeNode node, int nextRank) {
-            return service.priceText(nextRank) + "<gray> a rank";
-        }
-
-        @Override
         public List<String> extra(TreeNode node) {
             return List.of("<dark_gray>The " + node.title() + " enchantment on gear still works.");
-        }
-
-        @Override
-        public String notEnough(TreeNode node, int nextRank) {
-            if (!service.enabled()) {
-                return plain("enchants.abilities-off");
-            }
-            AbilityService.Shortfall lacking = service.shortfall(viewer, node.id(), nextRank);
-            String what = "";
-            if (lacking.shards() > 0) {
-                what = plain("enchants.abilities-lack-shards", "shards", lacking.shards(), "name", node.title());
-            }
-            if (lacking.money().isPositive()) {
-                String money = plain("enchants.abilities-lack-money", "money",
-                        de.raindancer.core.social.economy.Fees.format(lacking.money()));
-                what = what.isEmpty() ? money : what + plain("enchants.abilities-and") + money;
-            }
-            return plain("enchants.abilities-lack", "what", what.isEmpty() ? "…" : what);
-        }
-
-        private String plain(String key, Object... values) {
-            return MINI.serialize(messages.get(key, values));
         }
 
         private String name(String effect) {

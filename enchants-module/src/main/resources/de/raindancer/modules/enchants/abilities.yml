@@ -1,13 +1,14 @@
 # The abilities tree, read by Core's SkillTree. A node's effect id is the enchantment's key and each rank adds 1
 # to its level, so ranks = the enchantment's highest level. Another ability is one node here plus its key in
-# AbilityService.KEYS. Nodes cost money and shards (see AbilityService), so cost is 0: no points.
+# AbilityService.KEYS. A rank costs `cost` skill points from the pool the skills plugin provides, and needs the
+# Adventurer level `level` (+ `level-step` for every rank after the first).
 branches:
   abilities:
     title: Abilities
     icon: enchanted_book
-    blurb: "Unlock what an enchantment on your gear does, for good: shards of it and some money per rank."
+    blurb: "Unlock what an enchantment on your gear does, for good, with skill points."
 
 nodes:
-  double_jump: {branch: abilities, at: [0, 0], title: Double Jump, icon: feather, ranks: 3, cost: 0, effects: {"rainsenchants:double_jump": 1}}
-  swiftness: {branch: abilities, at: [1, 0], title: Swiftness, icon: sugar, ranks: 2, cost: 0, effects: {"rainsenchants:swiftness": 1}}
-  night_vision: {branch: abilities, at: [2, 0], title: Night Vision, icon: golden_carrot, ranks: 1, cost: 0, effects: {"rainsenchants:night_vision": 1}}
+  double_jump: {branch: abilities, at: [0, 0], title: Double Jump, icon: feather, ranks: 3, cost: 3, level: 10, level-step: 5, effects: {"rainsenchants:double_jump": 1}}
+  swiftness: {branch: abilities, at: [1, 0], title: Swiftness, icon: sugar, ranks: 2, cost: 2, level: 6, level-step: 6, effects: {"rainsenchants:swiftness": 1}}
+  night_vision: {branch: abilities, at: [2, 0], title: Night Vision, icon: golden_carrot, ranks: 1, cost: 2, level: 12, effects: {"rainsenchants:night_vision": 1}}

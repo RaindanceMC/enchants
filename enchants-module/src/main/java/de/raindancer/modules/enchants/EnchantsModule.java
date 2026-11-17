@@ -62,7 +62,7 @@ public final class EnchantsModule implements FlexModule {
     /** Chest Link drops are gathered this many ticks before they are sent. */
     private static final int LINK_EVERY = 20;
 
-    private static final ModuleInfo INFO = ModuleInfo.of("enchants", "Enchants", "0.42.0")
+    private static final ModuleInfo INFO = ModuleInfo.of("enchants", "Enchants", "0.43.0")
             .describedAs("Thirty real enchantments, their shards and the shard world, with advancements")
             .by("Raindancer118");
 
@@ -109,7 +109,18 @@ public final class EnchantsModule implements FlexModule {
         EnchantAdvancements advancements = new EnchantAdvancements(context.core().advancements());
         advancements.define();
         AbilityService abilities = new AbilityService(AbilityService.loadTree(), new AbilityStore(), settings::current,
-                AbilityService.livePurse());
+                AbilityService.livePoints());
+        // What is spent here comes off the skills' points (Core 2.108.0's pool); an older Core has no pool.
+        try {
+            de.raindancer.core.ui.tree.SkillPoints.spender(context.plugin(), AbilityService.SPENDER,
+                    id -> {
+                        Player online = context.plugin().getServer().getPlayer(id);
+                        return online == null ? 0 : abilities.spent(online);
+                    });
+            context.closeWith(() -> de.raindancer.core.ui.tree.SkillPoints.removeSpender(AbilityService.SPENDER));
+        } catch (LinkageError olderCore) {
+            context.log().info("RainsCore is older than 2.108.0: abilities cannot be bought with skill points.");
+        }
         air = new AirService(new AirRule(), new AirStore(), settings::current, advancements,
                 context.core().effects(), context.core().messages(), context.core().actionBars(),
                 context.core().flight(), abilities);
