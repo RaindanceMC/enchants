@@ -22,23 +22,48 @@ class EnchantsSettingsTest {
         assertThat(defaults.launchSpeed()).isEqualTo(200);
         assertThat(defaults.launchCooldownSeconds()).isEqualTo(600);
         assertThat(defaults.wisdomPercentPerLevel()).isEqualTo(50);
-        assertThat(defaults.shardWorldEnabled()).isTrue();
-        assertThat(defaults.shardWorld()).isEqualTo("shardlands");
-        assertThat(defaults.shardWorldRadius()).isEqualTo(2500);
-        assertThat(defaults.shardWorldMonsters()).isEqualTo(140);
-        assertThat(defaults.portalKey()).isEqualTo(org.bukkit.Material.AMETHYST_SHARD);
-        assertThat(defaults.shardDropPercent()).isEqualTo(100);
-        assertThat(defaults.crystalWardenPerMille()).isEqualTo(2);
         assertThat(defaults.autopilotTopSpeedPercent()).isEqualTo(200);
         assertThat(defaults.reinforcedPercentPerLevel()).isEqualTo(25);
         assertThat(defaults.abilitiesEnabled()).isTrue();
     }
 
     @Test
-    @DisplayName("no hourly shard limit: neither a setting nor a cap behind it")
-    void noShardCap() {
+    @DisplayName("shards are gone: no setting is named after them or the shard world")
+    void noShardSettings() {
         assertThat(EnchantsSettings.class.getRecordComponents())
-                .extracting(java.lang.reflect.RecordComponent::getName).doesNotContain("shardsPerHour");
+                .extracting(java.lang.reflect.RecordComponent::getName)
+                .noneMatch(name -> name.toLowerCase().contains("shard") || name.equals("portalKey")
+                        || name.equals("crystalWardenPerMille"))
+                .doesNotContain("abilitiesMoneyPerRank");
+    }
+
+    @Test
+    @DisplayName("a stored file that still has the removed shard and ability-price keys loads, and keeps the rest")
+    void oldKeysAreTolerated(@org.junit.jupiter.api.io.TempDir java.nio.file.Path dir) throws java.io.IOException {
+        java.nio.file.Path file = dir.resolve("enchants.yml");
+        java.nio.file.Files.writeString(file, """
+                flight-seconds-per-level: 45
+                shard-world-enabled: true
+                shard-world: shardlands
+                shard-world-radius: 2500
+                shard-world-monsters: 140
+                portal-key: AMETHYST_SHARD
+                shard-drop-percent: 100
+                shard-world-thunder-percent: 70
+                shard-world-haze: 12
+                crystal-warden-per-mille: 2
+                abilities.enabled: false
+                abilities.shards-per-rank: "4, 8, 16"
+                abilities.money-per-rank: 20k
+                """);
+        var store = new de.raindancer.core.data.settings.SettingsStore<>(
+                de.raindancer.core.data.settings.SettingsSchema.of(EnchantsSettings.class, EnchantsSettings.DEFAULTS), file);
+
+        store.load();
+
+        assertThat(store.problems()).isEmpty();
+        assertThat(store.current().flightSecondsPerLevel()).isEqualTo(45);
+        assertThat(store.current().abilitiesEnabled()).isFalse();
     }
 
     @Test

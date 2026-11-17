@@ -2,7 +2,6 @@ package de.raindancer.modules.enchants.command;
 
 import de.raindancer.core.content.enchant.CustomEnchantments;
 import de.raindancer.core.content.enchant.EnchantDef;
-import de.raindancer.core.content.enchant.EnchantShards;
 import de.raindancer.core.platform.util.Inventories;
 import de.raindancer.modules.enchants.EnchantsDefinitions;
 import de.raindancer.modules.enchants.EnchantsServices;
@@ -26,8 +25,8 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 /**
- * The game's {@code /give}, knowing Rain's enchantments too: {@code /give <player> telekinesis_shard 64},
- * {@code /give <player> flight_book} (highest level), {@code /give <player> flight_book_3 2}. Any other item goes
+ * The game's {@code /give}, knowing Rain's enchantments too: {@code /give <player> flight_book} (highest level),
+ * {@code /give <player> flight_book_3 2}. Any other item goes
  * on to {@code minecraft:give} exactly as typed, components and all.
  */
 public final class GiveCommand implements BasicCommand {
@@ -84,14 +83,8 @@ public final class GiveCommand implements BasicCommand {
 
     private static List<ItemStack> stacks(GiveRule.Request request, int count) {
         List<ItemStack> stacks = new ArrayList<>();
-        if (request.shard()) {
-            for (int left = count; left > 0; left -= 64) {
-                stacks.add(EnchantShards.of(request.enchantment(), Math.min(64, left)));
-            }
-        } else {
-            for (int i = 0; i < count; i++) {
-                stacks.add(CustomEnchantments.book(request.enchantment(), request.level()));
-            }
+        for (int i = 0; i < count; i++) {
+            stacks.add(CustomEnchantments.book(request.enchantment(), request.level()));
         }
         return stacks;
     }

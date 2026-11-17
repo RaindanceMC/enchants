@@ -6,7 +6,7 @@ import java.util.random.RandomGenerator;
 
 /**
  * Thor: an axe or mace thrown like Mjölnir, lightning where it hits, and a trident that calls a storm where it lands.
- * What a level does, and where the storm's bolts strike. Also who the shard world's rain leaves alone.
+ * What a level does, and where the storm's bolts strike.
  */
 public final class Thor {
 
@@ -53,10 +53,5 @@ public final class Thor {
             spots.add(new double[]{Math.cos(angle) * distance, Math.sin(angle) * distance});
         }
         return spots;
-    }
-
-    /** Whether the rain spares an enderman: in the shard world, where it nearly always rains, unless it stands in water. */
-    public static boolean sparesEnderman(boolean inShardWorld, boolean inWater) {
-        return inShardWorld && !inWater;
     }
 }

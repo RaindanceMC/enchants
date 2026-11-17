@@ -13,7 +13,6 @@ import org.bukkit.Material;
 /** What an owner decides about the enchantments. The schema of the file and of the /settings page. */
 @Settings(id = "enchants", topics = {
         @Topic(path = "enchants", title = "Enchantments", icon = Material.ENCHANTED_BOOK),
-        @Topic(path = "enchants/shards", title = "Shards and the shard world", icon = Material.ECHO_SHARD),
         @Topic(path = "enchants/abilities", title = "Abilities tree", icon = Material.NETHER_STAR),
 })
 public record EnchantsSettings(
@@ -70,58 +69,6 @@ public record EnchantsSettings(
         @Key("wisdom-percent-per-level")
         int wisdomPercentPerLevel,
 
-        @In("enchants/shards") @Title("The shard world")
-        @Describe("An amplified world in eternal night, full of monsters, where the enchantments' shards drop. "
-                + "Created at the first start if it does not exist (not on Folia, which cannot make worlds while "
-                + "running: create it there beforehand).")
-        @Key("shard-world-enabled")
-        boolean shardWorldEnabled,
-
-        @In("enchants/shards") @Title("Shard world name")
-        @Key("shard-world")
-        String shardWorld,
-
-        @In("enchants/shards") @Title("Shard world radius") @Range(min = 200, max = 30000)
-        @Describe("Its world border, in blocks from the middle. Amplified ground is slow to generate: keep it small "
-                + "or generate it beforehand.")
-        @Key("shard-world-radius")
-        int shardWorldRadius,
-
-        @In("enchants/shards") @Title("Monsters at once") @Range(min = 10, max = 500)
-        @Describe("How many monsters the shard world keeps around its players; the game's own is 70.")
-        @Key("shard-world-monsters")
-        int shardWorldMonsters,
-
-        @In("enchants/shards") @Title("Portal key")
-        @Describe("Right-click the inside of an obsidian portal frame with this to open it to the shard world; "
-                + "one is used up. Any portal in the shard world leads back to where the player came from.")
-        @Key("portal-key")
-        Material portalKey,
-
-        @In("enchants/shards") @Title("Shard chance, percent") @Range(min = 1, max = 100)
-        @Describe("How likely a creature of the shard world (any kind, monster or animal) drops its shards when a "
-                + "player kills it. It drops as many as its tier: a Shadowed one 1, Shardborn 2, Crystal 3-4, a Shard Tyrant 6-8, "
-                + "a Shard Overlord 10-14, and 30 to 50 % more on top. Only creatures that came by themselves count: bred, "
-                + "spawner, egg and command ones never drop shards.")
-        @Key("shard-drop-percent")
-        int shardDropPercent,
-
-        @In("enchants/shards") @Title("Thunderstorms, percent of the time") @Range(min = 0, max = 100)
-        @Describe("How much of the time the shard world lies under a thunderstorm; rolled anew every five minutes.")
-        @Key("shard-world-thunder-percent")
-        int shardWorldThunderPercent,
-
-        @In("enchants/shards") @Title("Haze specks") @Range(min = 0, max = 100)
-        @Describe("Dark red specks drifting around each player in the shard world, every half second; 0 for none.")
-        @Key("shard-world-haze")
-        int shardWorldHaze,
-
-        @In("enchants/shards") @Title("Crystal Wardens, per mille") @Range(min = 0, max = 1000)
-        @Describe("How many in a thousand monsters coming by themselves under the open sky of the shard world come as a "
-                + "warden instead, of any kind from Shadowed to Overlord, dropping five times that kind's shards. 0 for none.")
-        @Key("crystal-warden-per-mille")
-        int crystalWardenPerMille,
-
         @In("enchants") @Title("Autopilot III top speed, percent of a rocket") @Range(min = 100, max = 400)
         @Describe("How fast Autopilot keeps an elytra going at level III: 100 is a firework rocket's top speed "
                 + "(about 33 blocks a second), 200 twice that. Levels I and II get a third and two thirds of the extra. "
@@ -137,7 +84,7 @@ public record EnchantsSettings(
 
         @In("enchants") @Title("Switched-off enchantments")
         @Choices(value = EnchantsDefinitions.Keys.class, listedMeansOff = true)
-        @Describe("A switched-off enchantment does nothing, drops no shards, is not sold and cannot be put on at an "
+        @Describe("A switched-off enchantment does nothing, is not sold and cannot be put on at an "
                 + "anvil. Items keep it, so switching it back on brings it back as it was. The Fully Enchanted "
                 + "advancement counts the ones on at the last start.")
         @Key("switched-off")
@@ -151,7 +98,7 @@ public record EnchantsSettings(
         boolean abilitiesEnabled) {
 
     public static final EnchantsSettings DEFAULTS = new EnchantsSettings(30, 30, 8, 100, 90, 150, 200, 600, 50,
-            true, "shardlands", 2500, 140, Material.AMETHYST_SHARD, 100, 70, 12, 2, 200, 25,
+            200, 25,
             java.util.List.of(de.raindancer.core.content.enchant.RainsEnchants.LAUNCH),
             true);
 }

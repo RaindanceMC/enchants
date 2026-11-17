@@ -1,26 +1,24 @@
 id: enchants
 title: Rain's Enchantments
-summary: "Enchantments you will not find at an enchanting table: how to earn shards, unlock a book and put it on your gear."
+summary: "Enchantments you will not find at an enchanting table: how to unlock a book and put it on your gear."
 intro: |
-  These enchantments are not at an enchanting table. You earn them: shards come from a world of night full of monsters, your guild unlocks them, and you buy the book at the shop.
+  These enchantments are not at an enchanting table. Your guild unlocks them, and you buy the book at the shop.
 icon: ENCHANTED_BOOK
 category: Items & enchantments
 order: 20
 module: enchants
-aliases: [enchantments, enchantment, shards, shard, books, rain-enchants, custom-enchants]
+aliases: [enchantments, enchantment, books, rain-enchants, custom-enchants]
 keywords: [rarity, anvil, book, unlock, guild, legendary, rare, common]
 commands: [enchants]
-related: [shard-world, enchants-tools, enchants-armour, enchants-weapons, enchants-gear]
+related: [enchants-tools, enchants-armour, enchants-weapons, enchants-gear]
 wiki: https://wiki.raindancer118.de/enchants
 sections:
   - question: How do I get an enchantment?
     title: Getting them
     text: |
-      <b>1.</b> Open a portal to the {topic:shard-world} and kill monsters there. They drop <b>shards</b> of the enchantments.
-      <b>2.</b> Your <b>guild</b> pays shards into the unlock of one enchantment together ({cmd:/guild shards}). From then on everybody in the guild may buy its books. No guild? Join one, or found your own.
-      <b>3.</b> Buy the <b>book</b> at the shop: it costs shards of that enchantment plus money, and a higher level costs more of both.
-      <b>4.</b> Put it on at an anvil. Anvils never say "too expensive" for these. Two books of the same level make the next level, as in vanilla. That is often cheaper than buying the higher one.
-      Shards are ordinary items: you can trade, sell or auction them.
+      <b>1.</b> Your <b>guild</b> unlocks one enchantment for everybody in it. No guild? Join one, or found your own.
+      <b>2.</b> Buy the <b>book</b> at the shop; a higher level costs more.
+      <b>3.</b> Put it on at an anvil. Anvils never say "too expensive" for these. Two books of the same level make the next level, as in vanilla. That is often cheaper than buying the higher one.
   - question: What kinds of enchantments exist?
     title: The list
     text: |
@@ -32,7 +30,7 @@ sections:
   - question: How rare is each one?
     title: Rarity
     text: |
-      <white>Common</white> · <green>Uncommon</green> · <aqua>Rare</aqua> · <gold>Legendary</gold>. Rarer enchantments drop less often. The <b>legendary</b> ones, Thor and Reinforced, never drop from ordinary monsters (see {topic:shard-world}).
+      <white>Common</white> · <green>Uncommon</green> · <aqua>Rare</aqua> · <gold>Legendary</gold>. Rarer enchantments cost more to unlock.
   - question: Do combat enchantments work on players?
     title: Against players
     text: |
@@ -40,7 +38,7 @@ sections:
   - question: Why is an enchantment doing nothing?
     title: Switched off
     text: |
-      Staff can switch any enchantment off. A switched-off one does nothing, drops no shards, is not sold and cannot be put on at an anvil. Items keep it, and it works again as soon as it is switched back on.
+      Staff can switch any enchantment off. A switched-off one does nothing, is not sold and cannot be put on at an anvil. Items keep it, and it works again as soon as it is switched back on.
       {if:enchants:switched-off}Switched off now: <b>{setting:enchants:switched-off}</b>.{else}Nothing is switched off now.{/if}
       Numbers on these pages come from this server's settings.
   - question: Do they stack with vanilla enchantments?
@@ -50,4 +48,4 @@ sections:
   - question: Is there more to read?
     title: Wiki
     text: |
-      Every enchantment has its own page, with its shard in 3D: {url:https://wiki.raindancer118.de/enchants|the enchantments wiki}.
+      Every enchantment has its own page: {url:https://wiki.raindancer118.de/enchants|the enchantments wiki}.

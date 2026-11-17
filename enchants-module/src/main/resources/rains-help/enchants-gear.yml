@@ -19,4 +19,4 @@ sections:
   - question: What does Reinforced do?
     title: Reinforced
     text: |
-      <b>Legendary.</b> Every time the item would lose durability, there is a {setting:enchants:reinforced-percent-per-level|percent} chance per level that it does not, up to nine in ten at most, so nothing becomes unbreakable. It works on top of Unbreaking: that goes first, then Reinforced rolls on what is left. Reinforced armour looks different, worn and in the inventory. Its shards only drop from wardens and the Crystal Wither. {url:https://wiki.raindancer118.de/enchants/reinforced|wiki}
+      <b>Legendary.</b> Every time the item would lose durability, there is a {setting:enchants:reinforced-percent-per-level|percent} chance per level that it does not, up to nine in ten at most, so nothing becomes unbreakable. It works on top of Unbreaking: that goes first, then Reinforced rolls on what is left. Reinforced armour looks different, worn and in the inventory. {url:https://wiki.raindancer118.de/enchants/reinforced|wiki}

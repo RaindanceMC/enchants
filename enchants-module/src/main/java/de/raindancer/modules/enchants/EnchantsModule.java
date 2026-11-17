@@ -21,12 +21,7 @@ import de.raindancer.modules.enchants.store.AbilityStore;
 import de.raindancer.core.ui.tree.SkillView;
 import de.raindancer.core.ui.tree.Skills;
 import de.raindancer.modules.enchants.listener.ElytraListener;
-import de.raindancer.modules.enchants.listener.ShardListener;
 import de.raindancer.modules.enchants.listener.TabListener;
-import de.raindancer.modules.enchants.service.ShardDropService;
-import de.raindancer.modules.enchants.service.ShardMobService;
-import de.raindancer.modules.enchants.service.ShardPortalService;
-import de.raindancer.modules.enchants.service.ShardWorldService;
 import de.raindancer.modules.enchants.listener.ToolListener;
 import de.raindancer.modules.enchants.service.ChestLinkService;
 import de.raindancer.modules.enchants.service.ElytraService;
@@ -56,14 +51,11 @@ public final class EnchantsModule implements FlexModule {
 
     /** Worn effects are looked at every this-many ticks; an armour change is answered at once. */
     private static final int NIGHT_VISION_EVERY = 10;
-    /** Ticks between two puffs of the shard world's haze. */
-    private static final int HAZE_EVERY = 10;
-
     /** Chest Link drops are gathered this many ticks before they are sent. */
     private static final int LINK_EVERY = 20;
 
     private static final ModuleInfo INFO = ModuleInfo.of("enchants", "Enchants", "0.43.0")
-            .describedAs("Thirty real enchantments, their shards and the shard world, with advancements")
+            .describedAs("Thirty real enchantments with advancements, and the abilities tree bought with skill points")
             .by("Raindancer118");
 
     private AirService air;
@@ -80,17 +72,6 @@ public final class EnchantsModule implements FlexModule {
         return EnchantsDefinitions.all();
     }
 
-    /** The shard world's purple biomes: a datapack, which has to be found before the server loads its worlds. */
-    @Override
-    public void bootstrap(io.papermc.paper.plugin.bootstrap.BootstrapContext context) {
-        try {
-            de.raindancer.modules.enchants.service.ShardBiomePack.register(context);
-        } catch (java.io.IOException failed) {
-            context.getLogger().error("The shard world's purple biomes could not be written; it keeps the game's colours.",
-                    failed);
-        }
-    }
-
     private java.util.function.BooleanSupplier shardsOffered;
 
     @Override
@@ -99,8 +80,8 @@ public final class EnchantsModule implements FlexModule {
         context.core().messages().defineFrom(EnchantsModule.class.getResourceAsStream("messages.yml"),
                 context.chat().brand()::chatPrefix);
         PermissionNodes.register(context.plugin().getServer());
-        // Guilds hide unlocking enchantments with shards while no shards can be earned here.
-        shardsOffered = () -> settings.current().shardWorldEnabled();
+        // Shards are gone from the game; guilds must not offer unlocking with them.
+        shardsOffered = () -> false;
         EnchantUnlocks.shardsFrom(context.plugin(), shardsOffered);
 
         // Before the advancements are defined: the full set counts only what is switched on.
@@ -159,30 +140,11 @@ public final class EnchantsModule implements FlexModule {
                         context.core().messages(), context.core().effects(), advancements)));
         context.listener(new ToolListener(tools, links));
         context.listener(new TabListener(advancements));
-        ShardWorldService shardWorlds = new ShardWorldService(settings::current, context.log());
-        shardWorlds.ensure();
         context.listener(new de.raindancer.modules.enchants.listener.ThorListener(
-                new de.raindancer.modules.enchants.service.ThorService(context.plugin(), advancements), shardWorlds));
-        ShardPortalService portals = new ShardPortalService(context.plugin(), context.core().land(), shardWorlds, settings::current,
-                advancements, context.core().messages(), context.core().effects());
-        ShardMobService shardMobs = new ShardMobService(context.plugin(), shardWorlds, settings::current);
-        context.listener(new de.raindancer.modules.enchants.listener.CrystalWitherListener(context.plugin(), shardWorlds,
-                shardMobs, context.core().land()));
-        de.raindancer.modules.enchants.listener.ShardBiomeListener purple =
-                new de.raindancer.modules.enchants.listener.ShardBiomeListener(shardWorlds);
-        context.listener(purple);
-        // The chunks loaded before this listener was: the spawn's, a forced one.
-        shardWorlds.world().ifPresent(world -> {
-            for (org.bukkit.Chunk chunk : world.getLoadedChunks()) {
-                purple.convert(chunk);
-            }
-        });
+                new de.raindancer.modules.enchants.service.ThorService(context.plugin(), advancements)));
         context.listener(new de.raindancer.modules.enchants.listener.LookListener(context.plugin()));
         de.raindancer.modules.enchants.service.EnchantsPack.contribute(context.plugin(), context.core());
         context.closeWith(() -> de.raindancer.modules.enchants.service.EnchantsPack.withdraw(context.core()));
-        context.listener(new ShardListener(shardWorlds, portals,
-                new ShardDropService(shardWorlds, settings::current, advancements, context.core().messages()),
-                shardMobs));
         de.raindancer.modules.enchants.service.AutopilotService autopilot = new de.raindancer.modules.enchants.service.AutopilotService(
                 context.plugin(), context.core().messages(), settings::current, advancements, elytra);
         this.autopilot = autopilot;
@@ -197,11 +159,10 @@ public final class EnchantsModule implements FlexModule {
         } catch (LinkageError olderCore) {
             context.log().info("RainsCore is older than 2.103.0: heat-seeking aim and autopilot economy are not on /preferences.");
         }
-        EnchantsCommands.ready(new EnchantsServices(context.plugin().getServer(), context.core().messages(), shardMobs,
+        EnchantsCommands.ready(new EnchantsServices(context.plugin().getServer(), context.core().messages(),
                 autopilot, abilityScreen));
 
         int[] beat = {0};
-        java.util.random.RandomGenerator hazeDice = new java.util.SplittableRandom();
         var timer = Scheduling.globalTimer(context.plugin(), 1, 1, task -> {
             int now = beat[0]++;
             boolean checkNightVision = now % NIGHT_VISION_EVERY == 0;
@@ -216,20 +177,10 @@ public final class EnchantsModule implements FlexModule {
                     if (checkNightVision) {
                         wornEffects.sync(player);
                     }
-                    if (now % HAZE_EVERY == 0) {
-                        shardWorlds.haze(player, hazeDice);
-                    }
                 });
             }
         });
         context.closeWith(timer::cancel);
-        // The shard world's weather, rolled every five minutes (the world's own clock stands still at midnight).
-        java.util.random.RandomGenerator weatherDice = new java.util.SplittableRandom();
-        var weather = Scheduling.globalTimer(context.plugin(), 20L, 6_000L,
-                task -> shardWorlds.world().ifPresent(world -> shardWorlds.rollWeather(world, weatherDice)));
-        if (weather != null) {
-            context.closeWith(weather::cancel);
-        }
         context.log().info("Enchants are up: {} enchantment(s) registered.", EnchantsDefinitions.all().size());
     }
 

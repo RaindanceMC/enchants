@@ -59,7 +59,7 @@ class EnchantAdvancementsTest {
         for (String id : new String[]{"root", "veinminer", "motherlode", "night_vision", "flight", "empty_tank",
                 "frequent_flyer", "double_jump", "triple_jump", "full_set", "auto_sell", "boost", "burnout",
                 "launch", "ludicrous_speed", "swiftness", "haste", "soulbound", "wisdom", "excavator", "tunnel_vision",
-                "harvester", "bumper_crop", "smelting", "telekinesis", "chest_link", "shardlands", "first_shard",
+                "harvester", "bumper_crop", "smelting", "telekinesis", "chest_link",
                 "reinforced", "xp_siphon", "autopilot", "hypermiler", "need_for_speed",
                 "long_haul", "rocket_man", "running_on_fumes", "star_struck", "steady_hands",
                 "around_the_world", "deep_bite", "twin_catch", "treasure_hunter", "mythic_lure"}) {

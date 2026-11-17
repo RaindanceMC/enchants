@@ -1,11 +1,11 @@
 # Rain's Enchantments: Quick Guide
 
 ## Getting them
-1. Build an obsidian portal frame and right-click its inside with an **amethyst shard** to open it to the **shard world**, where it is always night, the land is amplified and there are a lot of monsters. Any portal there takes you back.
-2. Monsters you kill there drop **enchantment shards**. Tougher kinds (Shadowed → Shardborn → Crystal → Tyrant) drop more shards and rarer ones.
-   **Legendary** shards (Thor, Reinforced) only drop from **wardens** and the **Crystal Wither**, which you build from amethyst blocks instead of soul sand.
-3. Pay shards into your guild to unlock an enchantment, then buy its book in the shop. Shards are normal items, so you can also trade, sell or auction them.
-4. Put the book on your gear at an anvil. Anvils never say "too expensive" for these.
+1. Your guild unlocks an enchantment for everybody in it.
+2. Buy its book in the shop.
+3. Put the book on your gear at an anvil. Anvils never say "too expensive" for these.
+
+Double Jump, Swiftness and Night Vision can also be unlocked for good with skill points (`/enchants abilities` or `/skills`): Double Jump 3 points a rank from level 10, 15 and 20; Swiftness 2 a rank from level 6 and 12; Night Vision 2 from level 12. They need the skills plugin and come out of the same points as the skills.
 
 Rarity: common · uncommon · **rare** · ***legendary***
 
@@ -54,7 +54,7 @@ All combat bonuses only count **half against players**.
 | ***Thor*** | III | axe/mace/trident | Right-click to throw an axe or mace like Mjölnir: lightning where it hits, and it comes back (III hits very hard). A trident calls a lightning storm where it lands |
 
 ## Fishing
-Need RainsFishing on the server. Their shards also come out of the better sea chests.
+Need RainsFishing on the server.
 
 | Enchant | Max | On | What it does |
 |---|---|---|---|
@@ -72,6 +72,5 @@ Need RainsFishing on the server. Their shards also come out of the better sea ch
 ## Staff
 - `/enchants` lists every enchantment
 - `/enchants give <player> <enchant> [level]` gives a book
-- `/enchants shard <player> <enchant> [amount]` gives shards
-- `/give` also understands `flight_shard`, `flight_book` and `flight_book_3`
+- `/give` also understands `flight_book` and `flight_book_3`
 - Admins can switch any enchantment off in the settings. A switched-off enchantment does nothing, but items keep it.

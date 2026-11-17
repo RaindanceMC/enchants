@@ -1,6 +1,5 @@
 package de.raindancer.modules.enchants.listener;
 
-import de.raindancer.core.content.enchant.EnchantShards;
 import de.raindancer.core.platform.util.Scheduling;
 import de.raindancer.modules.enchants.service.WeaponLooks;
 import org.bukkit.entity.Item;
@@ -19,7 +18,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
 /**
- * Items that look the way their enchantments say: shards made before shards had their own looks, and weapons that
+ * Items that look the way their enchantments say: weapons that
  * become something else ({@link WeaponLooks}: Mjölnir). An enchantment can come or go in many places — anvil,
  * grindstone, enchanting table, smithing, loot — so items are dressed wherever they turn up.
  *
@@ -35,8 +34,7 @@ public final class LookListener implements IEnchantsListener {
     }
 
     static boolean dress(ItemStack stack) {
-        boolean shard = EnchantShards.dress(stack);
-        return WeaponLooks.dress(stack) | shard;
+        return WeaponLooks.dress(stack);
     }
 
     @EventHandler(priority = EventPriority.MONITOR)

@@ -47,14 +47,6 @@ public final class EnchantsCommand implements BasicCommand {
             }
             return;
         }
-        if (first.equals("shard")) {
-            shard(live, sender, args);
-            return;
-        }
-        if (first.equals("shardmob")) {
-            shardMob(live, sender, args);
-            return;
-        }
         if (!first.equals("give") || args.length < 3 || !sender.hasPermission(PermissionNodes.GIVE)) {
             live.messages().send(sender, "enchants.usage");
             return;
@@ -91,72 +83,14 @@ public final class EnchantsCommand implements BasicCommand {
     }
 
     private static boolean staffWord(String word) {
-        return word.equalsIgnoreCase("give") || word.equalsIgnoreCase("shard");
-    }
-
-    /** {@code /enchants shardmob <mob> <player>} — a creature next to them, as if it had come by itself. */
-    private static void shardMob(EnchantsServices live, CommandSender sender, String[] args) {
-        if (args.length < 3 || !sender.hasPermission(PermissionNodes.SUMMON)) {
-            live.messages().send(sender, "enchants.shardmob-usage");
-            return;
-        }
-        Player target = live.server().getPlayerExact(args[2]);
-        if (target == null) {
-            live.messages().send(sender, "enchants.not-online", "player", args[2]);
-            return;
-        }
-        org.bukkit.NamespacedKey key = org.bukkit.NamespacedKey.fromString(args[1].toLowerCase(Locale.ROOT));
-        org.bukkit.entity.EntityType type = key == null ? null : org.bukkit.Registry.ENTITY_TYPE.get(key);
-        if (type == null) {
-            live.messages().send(sender, "enchants.shardmob-unknown", "mob", args[1]);
-            return;
-        }
-        live.shardMobs().summon(target, type).ifPresentOrElse(
-                made -> live.messages().send(sender, "enchants.shardmob-made", "mob", type.getKey().getKey(),
-                        "player", target.getName()),
-                () -> live.messages().send(sender, "enchants.shardmob-refused", "mob", type.getKey().getKey()));
-    }
-
-    /** {@code /enchants shard <player> <enchantment> [amount]} — for staff, events and tests. */
-    private static void shard(EnchantsServices live, CommandSender sender, String[] args) {
-        if (args.length < 3 || !sender.hasPermission(PermissionNodes.GIVE)) {
-            live.messages().send(sender, "enchants.shard-usage");
-            return;
-        }
-        Player target = live.server().getPlayerExact(args[1]);
-        if (target == null) {
-            live.messages().send(sender, "enchants.not-online", "player", args[1]);
-            return;
-        }
-        Optional<EnchantDef> def = EnchantsDefinitions.all().stream()
-                .filter(each -> each.path().equals(args[2].toLowerCase(Locale.ROOT))).findFirst();
-        if (def.isEmpty()) {
-            live.messages().send(sender, "enchants.unknown", "name", args[2]);
-            return;
-        }
-        int amount = 1;
-        if (args.length >= 4) {
-            try {
-                amount = Math.max(1, Math.min(6400, Integer.parseInt(args[3])));
-            } catch (NumberFormatException notANumber) {
-                live.messages().send(sender, "enchants.shard-usage");
-                return;
-            }
-        }
-        java.util.List<ItemStack> stacks = new java.util.ArrayList<>();
-        for (int left = amount; left > 0; left -= 64) {
-            stacks.add(de.raindancer.core.content.enchant.EnchantShards.of(def.get().key(), Math.min(64, left)));
-        }
-        de.raindancer.core.platform.util.Inventories.giveOrDrop(target, stacks);
-        live.messages().send(sender, "enchants.shard-given", "player", target.getName(), "amount", amount,
-                "name", def.get().path());
+        return word.equalsIgnoreCase("give");
     }
 
     @Override
     public Collection<String> suggest(CommandSourceStack source, String[] args) {
         String typed = args.length == 0 ? "" : args[args.length - 1].toLowerCase(Locale.ROOT);
         List<String> options = switch (args.length) {
-            case 0, 1 -> source.getSender().hasPermission(PermissionNodes.GIVE) ? List.of("list", "abilities", "give", "shard", "shardmob")
+            case 0, 1 -> source.getSender().hasPermission(PermissionNodes.GIVE) ? List.of("list", "abilities", "give")
                     : List.of("list", "abilities");
             case 2 -> staffWord(args[0]) && source.getSender().hasPermission(PermissionNodes.GIVE)
                     ? services.get().server().getOnlinePlayers().stream().map(Player::getName).toList() : List.of();

@@ -156,10 +156,6 @@ public final class EnchantAdvancements {
         child("around_the_world", "long_haul", Material.MAP, "Around the World",
                 "Fly " + AROUND_KILOMETRES * 1000 + " blocks on Autopilot in total", AdvancementFrame.CHALLENGE,
                 AROUND_KILOMETRES);
-        child("shardlands", "root", Material.CRYING_OBSIDIAN, "Into the Dark",
-                "Step through a portal into the shard world", AdvancementFrame.TASK, 1);
-        child("first_shard", "shardlands", Material.ECHO_SHARD, "Shard Hunter",
-                "Take an enchantment's shard off a monster in the shard world", AdvancementFrame.TASK, 1);
         child("deep_bite", "root", Material.FISHING_ROD, "Quick on the Hook",
                 "Land a catch with a Deep Bite rod", AdvancementFrame.TASK, 1);
         child("twin_catch", "root", Material.COD, "Seeing Double",
@@ -321,15 +317,6 @@ public final class EnchantAdvancements {
         if (fusions >= de.raindancer.modules.enchants.rules.Fusion.MOST) {
             advancements.award(player, "rainsenchants:thrice_forged");
         }
-    }
-
-    public void enteredShardWorld(UUID player) {
-        advancements.award(player, ROOT);
-        advancements.award(player, "rainsenchants:shardlands");
-    }
-
-    public void foundShard(UUID player) {
-        advancements.award(player, "rainsenchants:first_shard");
     }
 
     public void forget(UUID player) {

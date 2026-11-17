@@ -197,9 +197,7 @@ class AbilityServiceTest {
         EnchantsSettings d = EnchantsSettings.DEFAULTS;
         return new EnchantsSettings(d.flightSecondsPerLevel(), d.flightRechargeSeconds(), d.landingGraceSeconds(),
                 d.doubleJumpPowerPercent(), d.boostRechargeSeconds(), d.boostSpeedPercent(), d.launchSpeed(),
-                d.launchCooldownSeconds(), d.wisdomPercentPerLevel(), d.shardWorldEnabled(), d.shardWorld(),
-                d.shardWorldRadius(), d.shardWorldMonsters(), d.portalKey(), d.shardDropPercent(),
-                d.shardWorldThunderPercent(), d.shardWorldHaze(), d.crystalWardenPerMille(),
+                d.launchCooldownSeconds(), d.wisdomPercentPerLevel(),
                 d.autopilotTopSpeedPercent(), d.reinforcedPercentPerLevel(), d.switchedOff(), on);
     }
 }

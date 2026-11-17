@@ -36,14 +36,6 @@ class ThorTest {
     }
 
     @Test
-    @DisplayName("endermen are spared the rain in the shard world, never real water, and nowhere else")
-    void endermen() {
-        assertThat(Thor.sparesEnderman(true, false)).isTrue();
-        assertThat(Thor.sparesEnderman(true, true)).as("standing in water").isFalse();
-        assertThat(Thor.sparesEnderman(false, false)).as("another world").isFalse();
-    }
-
-    @Test
     @org.junit.jupiter.api.DisplayName("Thor III hits drastically harder: twenty hearts a hammer, eight a bolt")
     void thorThree() {
         assertThat(Thor.hammerDamage(3)).isEqualTo(40);

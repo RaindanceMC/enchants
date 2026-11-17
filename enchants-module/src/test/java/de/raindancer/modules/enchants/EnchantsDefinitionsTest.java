@@ -103,6 +103,5 @@ class EnchantsDefinitionsTest {
             assertThat(def(key).gear().matches("fishing_rod")).isTrue();
             assertThat(def(key).gear().matches("diamond_sword")).isFalse();
         }
-        assertThat(de.raindancer.modules.enchants.rules.ShardRules.isLegendary(RainsEnchants.MYTHIC_LURE)).isTrue();
     }
 }

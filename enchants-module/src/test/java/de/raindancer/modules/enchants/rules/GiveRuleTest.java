@@ -13,13 +13,6 @@ class GiveRuleTest {
             "rainsenchants:auto_sell", 1));
 
     @Test
-    @DisplayName("an enchantment's shard, with or without the namespace")
-    void shards() {
-        assertThat(rule.parse("telekinesis_shard")).contains(new GiveRule.Request("rainsenchants:telekinesis", 0));
-        assertThat(rule.parse("rainsenchants:auto_sell_shard")).contains(new GiveRule.Request("rainsenchants:auto_sell", 0));
-    }
-
-    @Test
     @DisplayName("a book at its highest level, or the level asked for — never above the highest")
     void books() {
         assertThat(rule.parse("flight_book")).contains(new GiveRule.Request("rainsenchants:flight", 5));
@@ -34,14 +27,14 @@ class GiveRuleTest {
     void vanilla() {
         assertThat(rule.parse("diamond_sword")).isEmpty();
         assertThat(rule.parse("minecraft:echo_shard")).isEmpty();
-        assertThat(rule.parse("nothing_shard")).isEmpty();
+        assertThat(rule.parse("flight_shard")).as("shards are gone").isEmpty();
         assertThat(rule.parse("diamond_pickaxe[enchantments={\"rainsenchants:flight\":1}]")).isEmpty();
     }
 
     @Test
     @DisplayName("every name it knows, for tab completion")
     void names() {
-        assertThat(rule.names()).contains("rainsenchants:flight_shard", "rainsenchants:flight_book",
+        assertThat(rule.names()).contains("rainsenchants:flight_book",
                 "rainsenchants:flight_book_5", "rainsenchants:telekinesis_book").doesNotContain("rainsenchants:flight_book_6");
     }
 }

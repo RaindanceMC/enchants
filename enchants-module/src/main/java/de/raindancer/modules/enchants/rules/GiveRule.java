@@ -8,20 +8,15 @@ import java.util.Optional;
 import java.util.TreeMap;
 
 /**
- * The names {@code /give} knows Rain's enchantments by: {@code <name>_shard}, {@code <name>_book} (highest level)
+ * The names {@code /give} knows Rain's enchantments by: {@code <name>_book} (highest level)
  * and {@code <name>_book_<level>}, each with or without {@code rainsenchants:}. Everything else is the game's.
  */
 public final class GiveRule {
 
     private static final String NAMESPACE = "rainsenchants:";
-    private static final String SHARD = "_shard";
     private static final String BOOK = "_book";
 
-    /** @param level 0 for a shard, else the book's level */
     public record Request(String enchantment, int level) {
-        public boolean shard() {
-            return level == 0;
-        }
     }
 
     private final Map<String, Integer> maxLevels;
@@ -40,10 +35,6 @@ public final class GiveRule {
             name = name.substring(NAMESPACE.length());
         } else if (name.contains(":")) {
             return Optional.empty();
-        }
-        if (name.endsWith(SHARD)) {
-            String key = NAMESPACE + name.substring(0, name.length() - SHARD.length());
-            return maxLevels.containsKey(key) ? Optional.of(new Request(key, 0)) : Optional.empty();
         }
         int book = name.lastIndexOf(BOOK);
         if (book <= 0) {
@@ -72,7 +63,6 @@ public final class GiveRule {
     public List<String> names() {
         List<String> names = new ArrayList<>();
         maxLevels.forEach((key, max) -> {
-            names.add(key + SHARD);
             names.add(key + BOOK);
             for (int level = 1; level <= max; level++) {
                 names.add(key + BOOK + "_" + level);

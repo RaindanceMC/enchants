@@ -20,7 +20,7 @@ sections:
   - question: What does Night Vision do?
     title: Night Vision
     text: |
-      Wear the helmet (a turtle shell works too) and you see in the dark, without particles or icon. Potion night vision is never touched. It helps a lot in the {topic:shard-world}. {url:https://wiki.raindancer118.de/enchants/night-vision|wiki}
+      Wear the helmet (a turtle shell works too) and you see in the dark, without particles or icon. Potion night vision is never touched. {url:https://wiki.raindancer118.de/enchants/night-vision|wiki}
   - question: What does Swiftness do?
     title: Swiftness
     text: |

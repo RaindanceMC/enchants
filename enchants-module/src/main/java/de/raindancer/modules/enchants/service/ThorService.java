@@ -245,8 +245,4 @@ public final class ThorService {
         });
     }
 
-    /** Endermen in the shard world, where it nearly always rains, are not hurt or scared off by the rain. */
-    public static boolean spared(Entity entity, boolean inShardWorld) {
-        return entity instanceof org.bukkit.entity.Enderman && Thor.sparesEnderman(inShardWorld, entity.isInWater());
-    }
 }
