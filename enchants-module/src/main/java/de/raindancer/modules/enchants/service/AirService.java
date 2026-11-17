@@ -58,11 +58,19 @@ public final class AirService {
     private final Messages messages;
     private final ActionBars actionBars;
     private final Flight flight;
+    private final AbilityLevels levels;
     private final Map<UUID, AirState> states = new ConcurrentHashMap<>();
 
     public AirService(AirRule rule, AirStore store, Supplier<EnchantsSettings> settings,
                       EnchantAdvancements advancements, Effects effects, Messages messages,
                       ActionBars actionBars, Flight flight) {
+        this(rule, store, settings, advancements, effects, messages, actionBars, flight, AbilityLevels.GEAR_ONLY);
+    }
+
+    public AirService(AirRule rule, AirStore store, Supplier<EnchantsSettings> settings,
+                      EnchantAdvancements advancements, Effects effects, Messages messages,
+                      ActionBars actionBars, Flight flight, AbilityLevels levels) {
+        this.levels = levels;
         this.rule = rule;
         this.store = store;
         this.settings = settings;
@@ -98,7 +106,7 @@ public final class AirService {
 
     public void tick(Player player) {
         int flight = CustomEnchantments.levelOn(player.getInventory().getChestplate(), RainsEnchants.FLIGHT);
-        int jump = CustomEnchantments.levelOn(player.getInventory().getBoots(), RainsEnchants.DOUBLE_JUMP);
+        int jump = levels.effective(player, player.getInventory().getBoots(), RainsEnchants.DOUBLE_JUMP);
         AirState state = states.get(player.getUniqueId());
         if (state == null) {
             if (flight == 0 && jump == 0) {
@@ -213,7 +221,7 @@ public final class AirService {
             advancements.used(player.getUniqueId(), RainsEnchants.FLIGHT);
             return false;
         }
-        int jump = CustomEnchantments.levelOn(player.getInventory().getBoots(), RainsEnchants.DOUBLE_JUMP);
+        int jump = levels.effective(player, player.getInventory().getBoots(), RainsEnchants.DOUBLE_JUMP);
         if (rule.jumpsLeft(jump, state.jumpsUsed) > 0) {
             jump(player, state);
         }

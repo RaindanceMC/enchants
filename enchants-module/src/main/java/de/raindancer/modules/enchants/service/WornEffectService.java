@@ -1,6 +1,5 @@
 package de.raindancer.modules.enchants.service;
 
-import de.raindancer.core.content.enchant.CustomEnchantments;
 import de.raindancer.core.content.enchant.RainsEnchants;
 import de.raindancer.modules.enchants.EnchantAdvancements;
 import org.bukkit.entity.Player;
@@ -29,14 +28,20 @@ public final class WornEffectService {
             new Worn(RainsEnchants.HASTE, PlayerInventory::getItemInMainHand, PotionEffectType.HASTE));
 
     private final EnchantAdvancements advancements;
+    private final AbilityLevels levels;
 
     public WornEffectService(EnchantAdvancements advancements) {
+        this(advancements, AbilityLevels.GEAR_ONLY);
+    }
+
+    public WornEffectService(EnchantAdvancements advancements, AbilityLevels levels) {
         this.advancements = advancements;
+        this.levels = levels;
     }
 
     public void sync(Player player) {
         for (Worn worn : ALL) {
-            int level = CustomEnchantments.levelOn(worn.where().apply(player.getInventory()), worn.enchantment());
+            int level = levels.effective(player, worn.where().apply(player.getInventory()), worn.enchantment());
             PotionEffect current = player.getPotionEffect(worn.effect());
             if (level > 0) {
                 boolean ours = current != null && isOurs(current);
