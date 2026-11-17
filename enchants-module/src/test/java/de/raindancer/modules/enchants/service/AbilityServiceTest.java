@@ -200,4 +200,17 @@ class AbilityServiceTest {
                 d.launchCooldownSeconds(), d.wisdomPercentPerLevel(),
                 d.autopilotTopSpeedPercent(), d.reinforcedPercentPerLevel(), d.switchedOff(), on);
     }
+
+    @Test
+    @DisplayName("the pool is told what is remembered, so no other thread reads the player's data")
+    void rememberedSpent() {
+        assertThat(service.spentFor(player.getUniqueId())).as("nothing remembered yet").isZero();
+        assertThat(service.learn(player, "double_jump")).isEmpty();
+        assertThat(service.spentFor(player.getUniqueId())).as("remembered by learning").isEqualTo(3);
+
+        service.forget(player.getUniqueId());
+        assertThat(service.spentFor(player.getUniqueId())).isZero();
+        service.remember(player);
+        assertThat(service.spentFor(player.getUniqueId())).as("read again on joining").isEqualTo(3);
+    }
 }

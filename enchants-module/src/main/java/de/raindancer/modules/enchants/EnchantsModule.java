@@ -54,7 +54,7 @@ public final class EnchantsModule implements FlexModule {
     /** Chest Link drops are gathered this many ticks before they are sent. */
     private static final int LINK_EVERY = 20;
 
-    private static final ModuleInfo INFO = ModuleInfo.of("enchants", "Enchants", "0.43.0")
+    private static final ModuleInfo INFO = ModuleInfo.of("enchants", "Enchants", "0.43.1")
             .describedAs("Thirty real enchantments with advancements, and the abilities tree bought with skill points")
             .by("Raindancer118");
 
@@ -94,10 +94,7 @@ public final class EnchantsModule implements FlexModule {
         // What is spent here comes off the skills' points (Core 2.108.0's pool); an older Core has no pool.
         try {
             de.raindancer.core.ui.tree.SkillPoints.spender(context.plugin(), AbilityService.SPENDER,
-                    id -> {
-                        Player online = context.plugin().getServer().getPlayer(id);
-                        return online == null ? 0 : abilities.spent(online);
-                    });
+                    abilities::spentFor);
             context.closeWith(() -> de.raindancer.core.ui.tree.SkillPoints.removeSpender(AbilityService.SPENDER));
         } catch (LinkageError olderCore) {
             context.log().info("RainsCore is older than 2.108.0: abilities cannot be bought with skill points.");
@@ -127,6 +124,17 @@ public final class EnchantsModule implements FlexModule {
                 context.core().effects());
 
         context.listener(new AirListener(air, wornEffects));
+        context.listener(new de.raindancer.modules.enchants.listener.AbilityListener(abilities));
+        // Ranks bought on another server arrive a moment after joining, with the rest of the player's data.
+        context.closeWith(context.core().onSharedDataApplied((player, namespaces) -> {
+            if (namespaces.contains(de.raindancer.modules.enchants.store.AirStore.NAMESPACE)) {
+                de.raindancer.core.platform.util.Scheduling.entity(context.plugin(), player,
+                        () -> abilities.remember(player));
+            }
+        }));
+        for (Player online : context.plugin().getServer().getOnlinePlayers()) {
+            de.raindancer.core.platform.util.Scheduling.entity(context.plugin(), online, () -> abilities.remember(online));
+        }
         context.listener(new VeinAdvancementListener(advancements));
         context.listener(new de.raindancer.modules.enchants.listener.FishingAdvancementListener(advancements));
         context.listener(new ElytraListener(elytra));

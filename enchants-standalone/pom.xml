@@ -65,7 +65,7 @@
         <!-- 0.39.1: heat-seeking never locks onto your own pet, and onto somebody else's only where you may fight them (Core's companions). -->
         <!-- 0.42.0: abilities tree — Double Jump, Swiftness and Night Vision unlocked for good with shards of their own enchantment and money (/enchants abilities, /skills; settings abilities.*); no gear needed, the better of gear and unlock counts. -->
         <!-- 0.43.0: shards are gone and the abilities tree is bought with skill points from /skills (Core 2.108 pool, shared with the skills trees). -->
-        <plugin.version>0.43.0</plugin.version>
+        <plugin.version>0.43.1</plugin.version>
     </properties>
 
     <dependencies>

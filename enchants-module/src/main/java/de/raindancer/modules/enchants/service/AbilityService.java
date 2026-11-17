@@ -47,6 +47,8 @@ public final class AbilityService implements AbilityLevels {
     private final AbilityStore store;
     private final Supplier<EnchantsSettings> settings;
     private final Points points;
+    /** What each online player has spent here, set on their own thread: the skill pool asks from any thread. */
+    private final Map<java.util.UUID, Integer> spentNow = new java.util.concurrent.ConcurrentHashMap<>();
 
     public AbilityService(SkillTree tree, AbilityStore store, Supplier<EnchantsSettings> settings, Points points) {
         this.tree = tree;
@@ -128,6 +130,20 @@ public final class AbilityService implements AbilityLevels {
         return tree.spent(ranks(player));
     }
 
+    /** Reads what the player has spent into the memory the pool asks. On the player's own thread. */
+    public void remember(Player player) {
+        spentNow.put(player.getUniqueId(), spent(player));
+    }
+
+    public void forget(java.util.UUID player) {
+        spentNow.remove(player);
+    }
+
+    /** What the player has spent here, as last remembered; safe from any thread. */
+    public int spentFor(java.util.UUID player) {
+        return spentNow.getOrDefault(player, 0);
+    }
+
     /** The level of this enchantment the player has unlocked; 0 for none. */
     public int unlocked(Player player, String enchantment) {
         return tree.effects(ranks(player)).getOrDefault(enchantment, 0.0).intValue();
@@ -161,6 +177,7 @@ public final class AbilityService implements AbilityLevels {
             return refused;
         }
         store.set(player, nodeId, store.rank(player, nodeId) + 1);
+        remember(player);
         return Optional.empty();
     }
 }
