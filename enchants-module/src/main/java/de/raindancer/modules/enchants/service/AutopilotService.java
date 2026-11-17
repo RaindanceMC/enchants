@@ -154,7 +154,10 @@ public final class AutopilotService {
 
     /** {@code /autopilot economy}, or F in flight: economy mode on or off, kept for next time. */
     public void toggleEconomy(Player player) {
-        boolean economy = !economy(player);
+        setEconomy(player, !economy(player));
+    }
+
+    public void setEconomy(Player player, boolean economy) {
         player.getPersistentDataContainer().set(ECONOMY, PersistentDataType.BOOLEAN, economy);
         Flight flight = flights.get(player.getUniqueId());
         if (flight != null) {

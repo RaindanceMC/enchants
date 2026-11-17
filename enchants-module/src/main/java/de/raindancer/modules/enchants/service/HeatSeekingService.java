@@ -70,12 +70,17 @@ public final class HeatSeekingService {
 
     /** Switches between precise and wide. @return whether it is precise now */
     public static boolean toggle(Player player) {
-        if (precise(player)) {
+        boolean precise = !precise(player);
+        set(player, precise);
+        return precise;
+    }
+
+    public static void set(Player player, boolean precise) {
+        if (precise) {
+            player.getPersistentDataContainer().remove(WIDE);
+        } else {
             player.getPersistentDataContainer().set(WIDE, org.bukkit.persistence.PersistentDataType.BYTE, (byte) 1);
-            return false;
         }
-        player.getPersistentDataContainer().remove(WIDE);
-        return true;
     }
 
     /** A projectile left a player's hands. */

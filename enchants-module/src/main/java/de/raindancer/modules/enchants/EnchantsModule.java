@@ -55,7 +55,7 @@ public final class EnchantsModule implements FlexModule {
     /** Chest Link drops are gathered this many ticks before they are sent. */
     private static final int LINK_EVERY = 20;
 
-    private static final ModuleInfo INFO = ModuleInfo.of("enchants", "Enchants", "0.40.1")
+    private static final ModuleInfo INFO = ModuleInfo.of("enchants", "Enchants", "0.41.0")
             .describedAs("Thirty real enchantments, their shards and the shard world, with advancements")
             .by("Raindancer118");
 
@@ -158,6 +158,16 @@ public final class EnchantsModule implements FlexModule {
                 context.plugin(), context.core().messages(), settings::current, advancements, elytra);
         this.autopilot = autopilot;
         context.listener(new de.raindancer.modules.enchants.listener.AutopilotListener(autopilot));
+        // /preferences (Core 2.103.0) lists these; /heatseeking and /autopilot economy keep working.
+        try {
+            for (de.raindancer.core.ui.preference.Preference each
+                    : EnchantPreferences.build(autopilot, context.core().messages())) {
+                de.raindancer.core.ui.preference.Preferences.offer(context.plugin(), each);
+                context.closeWith(() -> de.raindancer.core.ui.preference.Preferences.withdraw(each));
+            }
+        } catch (LinkageError olderCore) {
+            context.log().info("RainsCore is older than 2.103.0: heat-seeking aim and autopilot economy are not on /preferences.");
+        }
         EnchantsCommands.ready(new EnchantsServices(context.plugin().getServer(), context.core().messages(), shardMobs,
                 autopilot));
 
